@@ -1,0 +1,74 @@
+@using Microsoft.AspNetCore.Identity
+@using Auctions.Models.Database
+@using System.Security.Claims
+
+@inject SignInManager<User> sign_in_manager
+@inject UserManager<User> user_manager
+
+@{
+    string id = "";
+    string full_name = "";
+    string role ="";
+    foreach(Claim claim in User.Claims) {
+        if(claim.Type.Equals("id")) {
+            id = claim.Value;
+        }
+
+        if(claim.Type.Equals("full_name")) {
+            full_name = claim.Value;
+        }
+
+        if(claim.Type.Equals(ClaimTypes.Role)) {
+            role = claim.Value;
+        }
+    }
+    var user = await user_manager.FindByIdAsync(id);
+}
+
+<ul class="navbar-nav">
+    @if(sign_in_manager.IsSignedIn(User) && role == "User") {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Welcome @full_name</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Auctions
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="CreateAuction">Create Auction</a>
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="MyAuctions">My Auctions</a>
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="WonAuctions">Won Auctions</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="User" asp-action="EditUserProfile" asp-route-id="@id">Edit Profile</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-controller="User" asp-action="LogOut">
+                <input type="submit" class="nav-link btn btn-link text-info" value="Log Out" />
+            </form>
+        </li>
+    } else if (sign_in_manager.IsSignedIn( User ) && role=="Admin") {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Welcome Admin</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Admin" asp-action="Users">Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Admin" asp-action="Auctions">Auctions</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-controller="User" asp-action="LogOut">
+                <input type="submit" class="nav-link btn btn-link text-info" value="Log Out" />
+            </form>
+        </li>
+    } else {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="User" asp-action="LogIn">Log in</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Register</a>
+        </li>
+    }
+</ul>

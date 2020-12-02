@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Auctions.Models.Database.Auction>
+
+@{
+    ViewData["Title"] = "Home Page";
+
+    int current_page = (int) TempData["current_page"];
+    int num_pages = (int) TempData["num_pages"];
+    int cnt = Model.Count();
+}
+
+@if(cnt > 0) {
+    <div class="row" id="filters">
+        <div class="col-xl-4">
+            <input type="text" id="auction_name" class="form-control" onkeyup="filter(@current_page);" onchange="filter(@current_page);" placeholder="Search by name">
+        </div>
+        <div class="col-xl-4">
+            <div class="input-group">
+                <input type="number" id="from_price" onkeyup="filter(@current_page);" onchange="filter(@current_page);" class="form-control mr-1" placeholder="From Price">
+                <input type="number" id="to_price" onkeyup="filter(@current_page);" onchange="filter(@current_page);" class="form-control ml-1" placeholder="To Price">
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <select class="form-control" id="state" onChange="filter(@current_page);">
+                <option value="@Auctions.Models.Database.state.DRAFT">By state</option>
+                <option value="@Auctions.Models.Database.state.OPEN">OPEN</option>
+                <option value="@Auctions.Models.Database.state.SOLD">SOLD</option>
+            </select>
+        </div>
+    </div>
+}
+
+<div class="text-center">
+    <div id="auctions">
+        @{ await Html.RenderPartialAsync("IndexPartial", Model); }
+    </div>
+</div>

@@ -1,0 +1,69 @@
+@model IEnumerable<Auctions.Models.Database.Auction>
+
+@{
+    ViewData["Title"] = "My Auctions";
+    var button_class = TempData["button"];
+    int cnt = Model.Count();
+}
+
+<div class="text-center">
+    @if(TempData["action"] != null) {
+        <div class="alert alert-@button_class alert-dissmisible" role="alert">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            @TempData["action"].ToString()
+        </div>
+    }
+</div>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Starting Price</th>
+            <th scope="col">Opens at</th>
+            <th scope="col">Closes at</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var auction in Model) {
+            cnt--;
+            <tr>
+                <td>@auction.name</td>
+                <td>@auction.description</td>
+                <td>@auction.starting_price</td>
+                <td>@auction.opens_at</td>
+                <td>@auction.closes_at</td>
+                
+                @if(auction.state == Auctions.Models.Database.state.DRAFT) {
+                    <td>
+                        <button type="button" class="btn btn-primary">
+                            <a asp-controller="User" asp-action="EditAuction" asp-route-id="@auction.id" class="text-white">Edit</a>
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger">
+                            <a asp-controller="User" asp-action="DeleteAuction" asp-route-id="@auction.id" class="text-white">Delete</a>
+                        </button>
+                    </td>
+                } else {
+                    <td>
+                        <button type="button" class="btn btn-primary text-white" disabled>Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger text-white" disabled>Delete</button>
+                    </td>
+                }
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if(cnt == Model.Count()) {
+    <div class="text-center">
+        <h3>No Auctions</h3>
+    </div>
+}

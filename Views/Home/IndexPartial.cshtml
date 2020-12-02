@@ -1,0 +1,102 @@
+@using Microsoft.AspNetCore.Identity;
+@using Auctions.Models.Database;
+@using System.Security.Claims;
+
+@model IEnumerable<Auctions.Models.Database.Auction>
+
+@inject SignInManager<User> sign_in_manager
+
+@{
+    ViewData["Title"] = "Home Page";
+
+    int current_page = (int) TempData["current_page"];
+    int num_pages = (int) TempData["num_pages"];
+    int cnt = Model.Count();
+    string role = "";
+
+    foreach(System.Security.Claims.Claim claim in User.Claims) {
+        if(claim.Type.Equals(ClaimTypes.Role)) {
+            role = claim.Value;
+        }
+    }
+}
+
+<div class="container">
+
+    @for(int i = 0; i < 3; i++) {
+
+        if(cnt == 0) {
+            break;
+        }
+
+        <div class="row">
+            @foreach(var auction in Model) {
+                string image = Convert.ToBase64String(auction.image);
+                var time_left = auction.closes_at - DateTime.Now;
+                cnt--;
+
+                <div class="col-xl-3">
+                    <div class="card mt-4" style="width:250px; height:400px">
+                        <div class="card-header text-center">
+                            <h5>
+                                <a class="text-primary" asp-controller="User" asp-action="AuctionDetails" asp-route-id="@auction.id">@auction.name</a>
+                            </h5>
+                        </div>
+                        <img class="card-img-top" src="data:image/png;base64,@image" style="width:100%; height:50%">
+                        <div class="card-body text-center">
+                            @if(@time_left.Hours == 0) {
+                                <h5 class="card-text text-danger">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
+                            } else {
+                                <h5 class="card-text">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
+                            }
+
+                            @if(@auction.price_increase > 0) {
+                                <h5 class="card-text text-success">$@auction.price_increase</h5>
+                            } else {
+                                <h5 class="card-text text-secondary">$@auction.price_increase</h5>
+                            }
+
+                            @if(@auction.bids != null && @auction.bids.LastOrDefault() != null) {
+                                <p class="card-text"><small class="text-muted">@auction.bids.LastOrDefault().user.UserName</small></p>
+                            }
+
+                            @if(sign_in_manager.IsSignedIn(User) && role == "User") {
+                                @if(@auction.state != @Auctions.Models.Database.state.SOLD) {
+                                    <button type="button" class="btn btn-warning" style="width:40%">
+                                        <a class="text-white" asp-controller="User" asp-action="Bid" asp-route-id="@auction.id">BID</a>
+                                    </button>
+                                } else {
+                                    <button type="button" class="btn btn-secondary" style="width:40%" disabled>SOLD</button>
+                                }
+                            } else {
+                                <button type="button" class="btn btn-danger text-white" style="width:70%" disabled>Register/Log In</button>
+                            }
+                            
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@if(cnt == Model.Count()) {
+    <div class="text-center">
+        <h3>No Auctions</h3>
+    </div>
+}
+
+<div class="row mt-5 justify-content-center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+
+            @for(int i = 0; i < num_pages; i++) {
+                int index = i + 1;
+                <li class="page-item">
+                    <button class="page-link" onclick="filter(@index);">@index</button>
+                </li>
+            }
+
+        </ul>
+    </nav>
+</div>
