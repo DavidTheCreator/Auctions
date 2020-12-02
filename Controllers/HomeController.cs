@@ -103,7 +103,7 @@ namespace Auctions.Controllers {
 
             TempData["current_page"] = filter.page;
             TempData["num_pages"] = (int) Math
-                                            .Ceiling((double) auctions
+                                            .Ceiling((double) auctions_
                                             .Count() / limit);
 
             return PartialView("IndexPartial", auctions_);

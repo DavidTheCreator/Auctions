@@ -1,4 +1,24 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@using Auctions.Models.Database;
+@using System.Security.Claims;
+
+@inject SignInManager<User> sign_in_manager
+
+@{
+    string role = "";
+    string full_name = "";
+    foreach(System.Security.Claims.Claim claim in User.Claims) {
+        if(claim.Type.Equals(ClaimTypes.Role)) {
+            role = claim.Value;
+        }
+
+        if(claim.Type.Equals("full_name")) {
+            full_name = claim.Value;
+        }
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +31,11 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Auctions</a>
+                @if(sign_in_manager.IsSignedIn(User) && role == "User") {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name</a>
+                } else {
+                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Auctions</a>
+                }
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

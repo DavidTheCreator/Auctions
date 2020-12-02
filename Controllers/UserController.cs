@@ -339,6 +339,24 @@ namespace Auctions.Controllers {
         }
 
         [Authorize(Roles = "User")]
+        public async Task<IActionResult> MyOrders() {
+            int limit = 10;
+            User user = await user_manager.GetUserAsync(base.User);
+
+            var orders = await context.orders
+                                    .Where(order => order.user_id == user.Id)
+                                    .OrderByDescending(order=> order.date)
+                                    .ToListAsync();
+            
+            TempData["current_page"] = 1;
+            TempData["num_pages"] = (int) Math
+                                            .Ceiling((double) orders
+                                            .Count() / limit);
+            
+            return View(orders);
+        }
+
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> WonAuctions() {
             User user = await user_manager.GetUserAsync(base.User);
 

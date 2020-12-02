@@ -7,15 +7,10 @@
 
 @{
     string id = "";
-    string full_name = "";
     string role ="";
     foreach(Claim claim in User.Claims) {
         if(claim.Type.Equals("id")) {
             id = claim.Value;
-        }
-
-        if(claim.Type.Equals("full_name")) {
-            full_name = claim.Value;
         }
 
         if(claim.Type.Equals(ClaimTypes.Role)) {
@@ -29,9 +24,10 @@
     @if(sign_in_manager.IsSignedIn(User) && role == "User") {
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Auctions @full_name
+                Auctions
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item text-dark" asp-controller="Home" asp-action="Index">All Auctions</a>
                 <a class="dropdown-item text-dark" asp-controller="User" asp-action="CreateAuction">Create Auction</a>
                 <a class="dropdown-item text-dark" asp-controller="User" asp-action="MyAuctions">My Auctions</a>
                 <a class="dropdown-item text-dark" asp-controller="User" asp-action="WonAuctions">Won Auctions</a>
@@ -39,7 +35,7 @@
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Auctions
+                Tokens
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item text-dark" asp-controller="User" asp-action="BuyTokens">Buy Tokens</a>
