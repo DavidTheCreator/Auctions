@@ -8,6 +8,15 @@
     int cnt = Model.Count();
 }
 
+<div class="text-center">
+    @if(TempData["action"] != null) {
+        <div class="alert alert-success alert-dissmisible" role="alert">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            @TempData["action"].ToString()
+        </div>
+    }
+</div>
+
 @if(cnt > 0) {
     <div class="row" id="filters">
         <div class="col-xl-4">

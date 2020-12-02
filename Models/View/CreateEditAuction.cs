@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 
 namespace Auctions.Models.View {
-    public class EditAuctionModel {
+    public class CreateEditAuctionModel {
         [HiddenInput]
         [Required]
         public int id { get; set;}
@@ -22,11 +22,19 @@ namespace Auctions.Models.View {
         public float starting_price { get; set; }    
         [Required]
         [DataType(DataType.Date)]
-        [Display(Name="Opens at")]
+        [Display(Name="Opens at (date)")]
         public DateTime opens_at { get; set; }
         [Required] 
         [DataType(DataType.Date)]
-        [Display(Name="Closes at")]
+        [Display(Name="Closes at (date)")]
         public DateTime closes_at { get; set; }
+        [Required]
+        [DataType(DataType.Time)]
+        [Display(Name="Opens at (time)")]
+        public DateTime opens_at_time { get; set; }
+        [Required]
+        [DataType(DataType.Time)]
+        [Display(Name="Closes at (time)")]
+        public DateTime closes_at_time { get; set; }
     }    
 }

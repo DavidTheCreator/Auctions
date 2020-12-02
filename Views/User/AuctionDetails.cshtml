@@ -9,6 +9,8 @@
 @{
     ViewData["Title"] = "Auction Details";
 
+    var user_id = (string) TempData["user_id"];
+
     string image = Convert.ToBase64String(Model.image);
     var time_left = Model.closes_at - DateTime.Now;
     string role = "";
@@ -25,7 +27,12 @@
         <div class="container">
             <div class="card" style="width:500px; height:900px">
                 <div class="card-header">
-                    <h5 class="text-primary">@Model.name</h5>
+                    @if(sign_in_manager.IsSignedIn(User) && role == "User" && @Model.user_id == user_id) {
+                        TempData["tab"] = "HomeTab";
+                        <a asp-controller="User" asp-action="EditAuction" asp-route-id="@Model.id" asp-route-from="Index"><h5 class="text-primary">@Model.name</h5></a>
+                    } else {
+                        <h5 class="text-primary">@Model.name</h5>
+                    }
                 </div>
                 <img class="card-img-top" src="data:image/png;base64,@image" style="width:100%; height:70%">
                 <div class="card-body">

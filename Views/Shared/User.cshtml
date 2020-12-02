@@ -27,17 +27,23 @@
 
 <ul class="navbar-nav">
     @if(sign_in_manager.IsSignedIn(User) && role == "User") {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Welcome @full_name</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Auctions @full_name
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="CreateAuction">Create Auction</a>
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="MyAuctions">My Auctions</a>
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="WonAuctions">Won Auctions</a>
+            </div>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Auctions
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item text-dark" asp-controller="User" asp-action="CreateAuction">Create Auction</a>
-                <a class="dropdown-item text-dark" asp-controller="User" asp-action="MyAuctions">My Auctions</a>
-                <a class="dropdown-item text-dark" asp-controller="User" asp-action="WonAuctions">Won Auctions</a>
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="BuyTokens">Buy Tokens</a>
+                <a class="dropdown-item text-dark" asp-controller="User" asp-action="MyOrders">My Orders</a>
             </div>
         </li>
         <li class="nav-item">

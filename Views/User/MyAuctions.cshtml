@@ -36,10 +36,13 @@
                 <td>@auction.starting_price</td>
                 <td>@auction.opens_at</td>
                 <td>@auction.closes_at</td>
-                
+
                 @if(auction.state == Auctions.Models.Database.state.DRAFT) {
                     <td>
                         <button type="button" class="btn btn-primary">
+                            @{
+                                TempData["tab"] = null;
+                            }
                             <a asp-controller="User" asp-action="EditAuction" asp-route-id="@auction.id" class="text-white">Edit</a>
                         </button>
                     </td>

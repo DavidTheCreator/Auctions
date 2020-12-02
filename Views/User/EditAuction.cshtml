@@ -1,4 +1,4 @@
-@model Auctions.Models.View.EditAuctionModel
+@model Auctions.Models.View.CreateEditAuctionModel
 
 @{
     ViewData["Title"] = "Edit Auction";
@@ -30,16 +30,25 @@
                 <label asp-for="starting_price" class="control-label"></label>
                 <input asp-for="starting_price" class="form-control"/>
                 <span asp-validation-for="starting_price" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="opens_at" class="control-label"></label>
                 <input asp-for="opens_at" class="form-control"/>
                 <span asp-validation-for="opens_at" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="opens_at_time" class="control-label"></label>
+                <input asp-for="opens_at_time" class="form-control"/>
+                <span asp-validation-for="opens_at_time" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="closes_at" class="control-label"></label>
                 <input asp-for="closes_at" class="form-control"/>
                 <span asp-validation-for="closes_at" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="closes_at_time" class="control-label"></label>
+                <input asp-for="closes_at_time" class="form-control"/>
+                <span asp-validation-for="closes_at_time" class="text-danger"></span>
             </div>
             <input type="submit" class="btn btn-success" value="Update"/>
         </form>

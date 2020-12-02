@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Won Auctions";
-    var user_id = TempData["user_id"];
+    var user_id = (string) TempData["user_id"];
     int cnt = Model.Count();
 }
 
@@ -13,7 +13,7 @@
         }
         <div class="row">
             @foreach(var auction in Model) {
-                if(auction.bids.LastOrDefault() == null || auction.bids.LastOrDefault().user_id != (string)user_id) {
+                if(auction.bids.LastOrDefault() == null || auction.bids.LastOrDefault().user_id != user_id) {
                     continue;
                 }
                 

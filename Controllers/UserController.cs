@@ -206,7 +206,7 @@ namespace Auctions.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAuction(EditAuctionModel model) {
+        public async Task<IActionResult> CreateAuction(CreateEditAuctionModel model) {
             if(!ModelState.IsValid) {
                 return View(model);
             }
@@ -219,11 +219,11 @@ namespace Auctions.Controllers {
             }
 
             DateTime opens_at = new DateTime(model.opens_at.Year, model.opens_at.Month, model.opens_at.Day,
-                                             model.opens_at.Hour, model.opens_at.Minute, model.opens_at.Second);
+                                             model.opens_at_time.Hour, model.opens_at_time.Minute, model.opens_at_time.Second);
 
             DateTime closes_at = new DateTime(model.closes_at.Year, model.closes_at.Month, model.closes_at.Day,
-                                             model.closes_at.Hour, model.closes_at.Minute, model.closes_at.Second);
-
+                                              model.closes_at_time.Hour, model.closes_at_time.Minute, model.closes_at_time.Second);
+            
             using ( BinaryReader reader = new BinaryReader(model.image.OpenReadStream())) {
                 Auction auction = new Auction()
                 {
@@ -251,8 +251,8 @@ namespace Auctions.Controllers {
             var auction = await context.auctions
                                     .Where(auction => auction.id == id).FirstOrDefaultAsync();
 
-            EditAuctionModel model = new EditAuctionModel() {
-                id = auction.id,
+            CreateEditAuctionModel model = new CreateEditAuctionModel() {
+                id = id,
                 name = auction.name,
                 description = auction.description,
                 starting_price = auction.starting_price,
@@ -267,7 +267,7 @@ namespace Auctions.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAuction(EditAuctionModel model) {
+        public async Task<IActionResult> EditAuction(CreateEditAuctionModel model) {
             if(model == null) {
                 return NotFound();
             }
@@ -293,16 +293,22 @@ namespace Auctions.Controllers {
                 return View(model);
             }
 
-            auction.opens_at = model.opens_at;
-            auction.closes_at = model.closes_at;
+            auction.opens_at = new DateTime(model.opens_at.Year, model.opens_at.Month, model.opens_at.Day,
+                                            model.opens_at_time.Hour, model.opens_at_time.Minute, model.opens_at_time.Second);
 
+            auction.closes_at = new DateTime(model.closes_at.Year, model.closes_at.Month, model.closes_at.Day,
+                                             model.closes_at_time.Hour, model.closes_at_time.Minute, model.closes_at_time.Second);
+            
             context.auctions.Update(auction);
             await context.SaveChangesAsync();
 
             TempData["button"] = "success";
             TempData["action"] = string.Format("{0} successfully updated!", auction.name);
-
-            return RedirectToAction(nameof(UserController.MyAuctions), "User");
+            if((string) TempData["tab"] == "HomeTab") {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            } else {
+                return RedirectToAction(nameof(UserController.MyAuctions), "User");
+            }
         }
 
         [Authorize(Roles = "User")]
@@ -351,6 +357,9 @@ namespace Auctions.Controllers {
             var auction = await context.auctions
                                     .Where(auction => auction.id == id)
                                     .FirstOrDefaultAsync();
+
+            User user = await user_manager.GetUserAsync(base.User);
+            TempData["user_id"] = user.Id;
 
             return View(auction);
         }
