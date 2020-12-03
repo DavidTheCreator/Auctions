@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "My Auctions";
-    var button_class = TempData["button"];
+    string button_class = (string) TempData["button"];
     int cnt = Model.Count();
 }
 

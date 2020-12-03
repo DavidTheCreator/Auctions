@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Auctions.Migrations
 {
-    public partial class Database : Migration
+    public partial class Database_Complete : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -215,7 +215,6 @@ namespace Auctions.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     user_id = table.Column<string>(nullable: true),
                     auction_id = table.Column<int>(nullable: false),
-                    tokens = table.Column<int>(nullable: false),
                     time = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -238,12 +237,12 @@ namespace Auctions.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "22da443b-c842-4275-a65c-0a45d403fe35", "1f1bd27f-e0e6-4df4-94bd-7545beefec91", "User", "USER" });
+                values: new object[] { "89a16ae3-c9a1-4904-b8ef-1a9e169403b7", "36097878-76f3-4307-acac-d0f2e3b7f72e", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "5c40a85a-c81e-4774-bb5f-7546de7dc4d6", "cfcc8a20-6df2-4974-b4e1-8194b1138caa", "Admin", "ADMIN" });
+                values: new object[] { "655e1a54-4c9f-45ad-bcf2-c91dca88ce4a", "f4291ff1-a172-4b33-b4bf-1fa05379c64c", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

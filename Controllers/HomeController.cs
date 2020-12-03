@@ -86,12 +86,12 @@ namespace Auctions.Controllers {
 
             if (filter.from_price != 0) {
                 auctions = auctions
-                                .Where(auction => auction.starting_price + auction.price_increase > filter.from_price);
+                                .Where(auction => auction.starting_price + auction.price_increase >= filter.from_price);
             }
 
             if(filter.to_price != 0) {
                 auctions = auctions
-                                .Where(auction => auction.starting_price + auction.price_increase < filter.to_price);
+                                .Where(auction => auction.starting_price + auction.price_increase <= filter.to_price);
             }    
 
             IList<Auction> auctions_ = await auctions

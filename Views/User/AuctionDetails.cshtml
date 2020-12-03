@@ -14,10 +14,15 @@
     string image = Convert.ToBase64String(Model.image);
     var time_left = Model.closes_at - DateTime.Now;
     string role = "";
+    string id = "";
 
     foreach(System.Security.Claims.Claim claim in User.Claims) {
         if(claim.Type.Equals(ClaimTypes.Role)) {
             role = claim.Value;
+        }
+
+        if(claim.Type.Equals("id")) {
+            id = claim.Value;
         }
     }
 }
@@ -52,17 +57,20 @@
                     @if(@Model.bids != null && @Model.bids.LastOrDefault() != null) {
                         <p class="card-text"><small class="text-muted">@Model.bids.LastOrDefault().user.UserName</small></p>
                     }
-
-                    @if(sign_in_manager.IsSignedIn(User) && role == "User") {
-                        @if(@Model.state != @Auctions.Models.Database.state.SOLD) {
-                            <button type="button" class="btn btn-warning" style="width:40%">
+                    @if(sign_in_manager.IsSignedIn(User) && role == "Admin") {
+                        <button type="button" class="btn btn-primary" style="width:20%" disabled>ADMIN</button>
+                    } else if(sign_in_manager.IsSignedIn(User) && role == "User") {
+                        if(@Model.user_id == id) {
+                            <button type="button" class="btn btn-primary" style="width:30%" disabled>MY AUCTION</button>
+                        } else if(@Model.state != @Auctions.Models.Database.state.SOLD) {
+                            <button type="button" class="btn btn-warning" style="width:20%">
                                 <a class="text-white" asp-controller="User" asp-action="Bid" asp-route-id="@Model.id">BID</a>
                             </button>
                         } else {
-                            <button type="button" class="btn btn-secondary" style="width:40%" disabled>SOLD</button>
+                            <button type="button" class="btn btn-secondary" style="width:20%" disabled>SOLD</button>
                         }
                     } else {
-                        <button type="button" class="btn btn-danger text-white" style="width:70%" disabled>Register/Log In</button>
+                        <button type="button" class="btn btn-danger text-white" style="width:30%" disabled>Register/Log In</button>
                     }
 
                 </div>

@@ -5,12 +5,13 @@
 
     int current_page = (int) TempData["current_page"];
     int num_pages = (int) TempData["num_pages"];
+    string button_class = (string) TempData["button"];
     int cnt = Model.Count();
 }
 
 <div class="text-center">
     @if(TempData["action"] != null) {
-        <div class="alert alert-success alert-dissmisible" role="alert">
+        <div class="alert alert-@button_class alert-dissmisible" role="alert">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             @TempData["action"].ToString()
         </div>

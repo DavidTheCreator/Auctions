@@ -74,9 +74,6 @@ namespace Auctions.Migrations
                     b.Property<DateTime>("time")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("tokens")
-                        .HasColumnType("int");
-
                     b.Property<string>("user_id")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
@@ -223,15 +220,15 @@ namespace Auctions.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "22da443b-c842-4275-a65c-0a45d403fe35",
-                            ConcurrencyStamp = "1f1bd27f-e0e6-4df4-94bd-7545beefec91",
+                            Id = "89a16ae3-c9a1-4904-b8ef-1a9e169403b7",
+                            ConcurrencyStamp = "36097878-76f3-4307-acac-d0f2e3b7f72e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "5c40a85a-c81e-4774-bb5f-7546de7dc4d6",
-                            ConcurrencyStamp = "cfcc8a20-6df2-4974-b4e1-8194b1138caa",
+                            Id = "655e1a54-4c9f-45ad-bcf2-c91dca88ce4a",
+                            ConcurrencyStamp = "f4291ff1-a172-4b33-b4bf-1fa05379c64c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

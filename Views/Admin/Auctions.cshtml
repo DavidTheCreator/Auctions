@@ -17,18 +17,23 @@
 
 <table class="table">
     <thead class="thead-dark">
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Starting Price</th>
-            <th scope="col">Opens at</th>
-            <th scope="col">Closes at</th>
-            <th scope="col">Confirm</th>
-            <th scope="col">Delete</th>
-        </tr>
+        
+        @if(cnt > 0) {
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Starting Price</th>
+                <th scope="col">Opens at</th>
+                <th scope="col">Closes at</th>
+                <th scope="col">Confirm</th>
+                <th scope="col">Delete</th>
+            </tr>
+        }
+        
     </thead>
     <tbody>
         @foreach(var auction in Model) {
+            cnt--;
             <tr>
                 <td>@auction.name</td>
                 <td>@auction.description</td>

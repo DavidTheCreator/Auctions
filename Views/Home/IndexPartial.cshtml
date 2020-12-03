@@ -13,10 +13,15 @@
     int num_pages = (int) TempData["num_pages"];
     int cnt = Model.Count();
     string role = "";
+    string id = "";
 
     foreach(System.Security.Claims.Claim claim in User.Claims) {
         if(claim.Type.Equals(ClaimTypes.Role)) {
             role = claim.Value;
+        }
+
+        if(claim.Type.Equals("id")) {
+            id = claim.Value;
         }
     }
 }
@@ -60,8 +65,13 @@
                                 <p class="card-text"><small class="text-muted">@auction.bids.LastOrDefault().user.UserName</small></p>
                             }
 
-                            @if(sign_in_manager.IsSignedIn(User) && role == "User") {
-                                @if(@auction.state != @Auctions.Models.Database.state.SOLD) {
+                            @if(sign_in_manager.IsSignedIn(User) && role == "Admin") {
+                                <button type="button" class="btn btn-primary" style="width:40%" disabled>ADMIN</button>
+                            } else if(sign_in_manager.IsSignedIn(User) && role == "User") {
+                                if(@auction.user_id == id) {
+                                    <button type="button" class="btn btn-primary" style="width:60%" disabled>MY AUCTION</button>
+                                }
+                                else if(@auction.state != @Auctions.Models.Database.state.SOLD) {
                                     <button type="button" class="btn btn-warning" style="width:40%">
                                         <a class="text-white" asp-controller="User" asp-action="Bid" asp-route-id="@auction.id">BID</a>
                                     </button>

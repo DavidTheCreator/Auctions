@@ -379,7 +379,11 @@ namespace Auctions.Controllers {
                                     .FirstOrDefaultAsync();
 
             User user = await user_manager.GetUserAsync(base.User);
-            TempData["user_id"] = user.Id;
+            if(user != null) {
+                TempData["user_id"] = user.Id;
+            } else {
+                TempData["user_id"] = "";
+            }
 
             return View(auction);
         }
@@ -405,6 +409,29 @@ namespace Auctions.Controllers {
             await context.SaveChangesAsync();
 
             return RedirectToAction(nameof(UserController.MyOrders), "User");
+        }
+
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> Bid(int id) {
+            User user = await user_manager.GetUserAsync(base.User);
+
+            Auction auction = await context.auctions
+                                .Where(auction => auction.id == id)
+                                .FirstOrDefaultAsync();
+
+            if(user.tokens == 0) {
+                TempData["button"] = "danger";
+                TempData["action"] = "You don't have any tokens left!";
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+
+            
+
+
+            TempData["button"] = "success";
+            TempData["action"] = "Your have successfully made a bid!";
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
     }
 }

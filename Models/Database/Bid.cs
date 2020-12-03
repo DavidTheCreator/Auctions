@@ -12,7 +12,6 @@ namespace Auctions.Models.Database {
         public User user { get; set; }
         public int auction_id { get; set; }
         public Auction auction { get; set; }
-        public int tokens { get; set; }
         public DateTime time { get; set; }
     }
 
