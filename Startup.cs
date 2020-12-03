@@ -1,14 +1,16 @@
 using AutoMapper;
-using Auctions.Models.Database;
+using Auctions.Hubs;
 using Auctions.Factories;
+using Auctions.Models.Database;
 using Auctions.Models.Initializers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+
 
 namespace Auctions {
     public class Startup {
@@ -77,6 +79,7 @@ namespace Auctions {
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
+                endpoints.MapHub<AuctionHub>("/update");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

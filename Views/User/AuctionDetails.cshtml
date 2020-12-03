@@ -43,9 +43,9 @@
                 <div class="card-body">
 
                     @if(@time_left.Hours == 0) {
-                        <h5 class="card-text text-danger">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
+                        <h5 class="card-text text-danger timer">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
                     } else {
-                        <h5 class="card-text">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
+                        <h5 class="card-text timer">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
                     }
 
                     @{

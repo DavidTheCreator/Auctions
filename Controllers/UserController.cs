@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Claims;
 using Auctions.Models.Database;
 using Auctions.Models.View;
 using AutoMapper;
@@ -10,8 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static Auctions.Models.Database.tokens;
-using static Auctions.Models.Database.prices;
 
 
 namespace Auctions.Controllers {
@@ -444,6 +443,22 @@ namespace Auctions.Controllers {
             TempData["action"] = string.Format("You have successfully purchased the {0} package!", package);
 
             return RedirectToAction(nameof(UserController.MyOrders), "User");
+        }
+
+        [Authorize(Roles = "User")]
+        public int MyTokens() {
+            string user_id = "";
+            
+            foreach(Claim claim in User.Claims) {
+                if(claim.Type.Equals("id")) {
+                    user_id = claim.Value;
+                }
+            }
+
+            User user = context.Users
+                            .Where(user => user.Id == user_id).FirstOrDefault();
+            
+            return user.tokens;
         }
 
         [Authorize(Roles = "User")]

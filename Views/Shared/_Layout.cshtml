@@ -42,7 +42,7 @@
                     if(tokens == "0") {
                         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name, You don't have any tokens left</a>
                     } else {
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name, You have @tokens tokens left</a>
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name, You have <h5 id="tokens" style="display:inline-block;">@tokens</h5> tokens left</a>
                     }
                 } else {
                      <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Auctions Website</a>

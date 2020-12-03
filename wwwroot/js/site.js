@@ -24,7 +24,7 @@ function filter(page) {
         })
 }
 
-function orders_page(page) {
+function ordersPage(page) {
     $.ajax({
         type:"POST",
         url:"/User/MyOrdersPage",
@@ -37,3 +37,67 @@ function orders_page(page) {
         error: function(response) {}
     })
 }
+
+function updateTimer() {
+    var timer = document.getElementsByClassName("timer");
+    for (var i = 0; i < timer.length; i++) {    
+        var array = timer[i].textContent.split(":");
+
+        var hours = parseInt(array[0]);
+        var minutes = parseInt(array[1]);
+        var seconds = parseInt(array[2]);
+
+        var time_in_seconds = hours * 3600 + minutes * 60 + seconds - 1;
+        
+        if(time_in_seconds <= 0) {
+            time_in_seconds = 0;
+        }
+
+        seconds = time_in_seconds % 60;
+        minutes = Math.floor(time_in_seconds / 60) % 60;
+        hours = Math.floor(time_in_seconds / 3600);
+        
+        if(seconds < 10) {
+            seconds = "0" + seconds
+        }
+    
+        if(minutes < 10) {
+            minutes = "0" + minutes
+        }
+    
+        if(hours < 10) {
+            hours = "0" + hours
+        }
+
+        timer[i].textContent = hours + ":" + minutes + ":" + seconds;
+    }
+}
+
+setInterval(updateTimer, 1000)
+
+function getTokens() {
+    $.ajax({
+        type:"POST",
+        url:"/User/MyTokens",
+        success: function(response) {
+            $("#tokens").val(response);
+        },
+        error: function(response) {}
+    })
+}
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/update").build()
+
+connection.on(
+    "Bid",
+    function() {
+        getTokens();
+    }
+);
+
+connection.on(
+    "PurchaseTokens",
+    function() {
+        getTokens();
+    }
+);
