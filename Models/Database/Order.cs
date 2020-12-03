@@ -6,23 +6,26 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Auctions.Models.Database {
 
-    public enum package {
-        Silver = 0,
-        Gold = 1,
-        Platinum = 2
+    public enum tokens {
+        SILVER = 5,
+        GOLD = 10,
+        PLATINUM = 20
+    }
+
+    public enum prices {
+        SILVER = 1000,
+        GOLD = 1900,
+        PLATINUM = 3600
     }
 
     public class Order {
         [Key]
         public int id { get; set; }
+        [Required]
         public string user_id { get; set; }
         public User user { get; set; }
         [Required]
-        public int tokens { get; set; }
-        [Required]
-        public float price { get; set; }
-        [Required]
-        public package type { get; set; }
+        public string package { get; set; } = "PLATINUM";
         public DateTime date { get; set; }
     }
 

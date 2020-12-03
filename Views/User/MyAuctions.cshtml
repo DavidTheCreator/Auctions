@@ -17,15 +17,19 @@
 
 <table class="table">
     <thead class="thead-dark">
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Starting Price</th>
-            <th scope="col">Opens at</th>
-            <th scope="col">Closes at</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
-        </tr>
+
+        @if(cnt > 0) {
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Starting Price</th>
+                <th scope="col">Opens at</th>
+                <th scope="col">Closes at</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        }
+        
     </thead>
     <tbody>
         @foreach(var auction in Model) {
@@ -67,6 +71,6 @@
 
 @if(cnt == Model.Count()) {
     <div class="text-center">
-        <h3>No Auctions</h3>
+        <h3>No Auctions Created</h3>
     </div>
 }

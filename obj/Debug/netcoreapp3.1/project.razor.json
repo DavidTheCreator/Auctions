@@ -14437,13 +14437,13 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\Register.cshtml",
-      "TargetPath": "Views\\User\\Register.cshtml",
+      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\PurchaseTokens.cshtml",
+      "TargetPath": "Views\\User\\PurchaseTokens.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\BuyTokens.cshtml",
-      "TargetPath": "Views\\User\\BuyTokens.cshtml",
+      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\Register.cshtml",
+      "TargetPath": "Views\\User\\Register.cshtml",
       "FileKind": "mvc"
     },
     {

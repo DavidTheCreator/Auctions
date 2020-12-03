@@ -22,7 +22,7 @@ namespace Auctions.Models.View {
 
         [Required]
         [Display(Name="Gender")]
-        public string gender {get; set;}
+        public string gender { get; set; }
 
         [Required, MinLength(6)]
         [Display(Name = "Username")]

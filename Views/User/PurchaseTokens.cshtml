@@ -1,0 +1,26 @@
+@model Auctions.Models.View.PurchaseTokensModel
+
+@{
+    ViewData["Title"] = "Purchase Tokens";
+
+    List<SelectListItem> packages = new List<SelectListItem>();    
+    
+    packages.Add(new SelectListItem("SILVER", "SILVER"));
+    packages.Add(new SelectListItem("GOLD", "GOLD"));
+    packages.Add(new SelectListItem("PLATINUM", "PLATINUM"));
+}
+
+<h1>Purchase Tokens</h1>
+
+<div class="row">
+    <div class="col-xl-4">
+        <form asp-controller="User" asp-action="PurchaseTokens" enctype="multipart/form-data">
+            <div class="form-group">
+                <label asp-for="package" class="control-label"></label>
+                <select asp-for="package" class="form-control" asp-items="@packages"></select>
+                <span asp-validation-for="package" class="text-danger"></span>
+            </div>
+            <input type="submit" class="btn btn-success" value="Purchase"/>
+        </form>
+    </div>
+</div>

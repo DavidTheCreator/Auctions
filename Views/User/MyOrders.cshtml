@@ -1,3 +1,6 @@
+@using static Auctions.Models.Database.tokens;
+@using static Auctions.Models.Database.prices;
+
 @model IEnumerable<Auctions.Models.Database.Order>
 
 @{
@@ -18,21 +21,27 @@
 
 <table class="table">
     <thead class="thead-dark">
-        <tr>
-            <th scope="col">Package Type</th>
-            <th scope="col">Tokens</th>
-            <th scope="col">Price</th>
-            <th scope="col">Date</th>
-        </tr>
+        @if(cnt > 0) {
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Package Type</th>
+                <th scope="col">Date</th>
+                <th scope="col">Tokens</th>
+                <th scope="col">Price</th>
+            </tr>
+        }
     </thead>
     <tbody>
         @foreach(var order in Model) {
             cnt--;
+            int tokens = (int) Enum.Parse(typeof(Auctions.Models.Database.tokens), order.package);
+            int price = (int) Enum.Parse(typeof(Auctions.Models.Database.prices), order.package);
             <tr>
-                <td>@order.type</td>
-                <td>@order.tokens</td>
-                <td>@order.price</td>
+                <td>@order.id</td>
+                <td>@order.package</td>
                 <td>@order.date</td>
+                <td>@tokens</td>
+                <td>@price</td>
             </tr>
         }
     </tbody>

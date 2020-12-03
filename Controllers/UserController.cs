@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Auctions.Models.Database.tokens;
+using static Auctions.Models.Database.prices;
 
 
 namespace Auctions.Controllers {
@@ -345,7 +347,7 @@ namespace Auctions.Controllers {
 
             var orders = await context.orders
                                     .Where(order => order.user_id == user.Id)
-                                    .OrderByDescending(order=> order.date)
+                                    .OrderBy(order => order.date)
                                     .ToListAsync();
             
             TempData["current_page"] = 1;
@@ -380,6 +382,29 @@ namespace Auctions.Controllers {
             TempData["user_id"] = user.Id;
 
             return View(auction);
+        }
+
+        [Authorize(Roles = "User")]
+        public IActionResult PurchaseTokens() {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PurchaseTokens(PurchaseTokensModel model) {
+            User user = await user_manager.GetUserAsync(base.User);
+
+            Order order = new Order() {
+                id = model.id,
+                package = model.package,
+                date = DateTime.Now,
+                user_id = user.Id
+            };
+
+            await context.orders.AddAsync(order);
+            await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(UserController.MyOrders), "User");
         }
     }
 }

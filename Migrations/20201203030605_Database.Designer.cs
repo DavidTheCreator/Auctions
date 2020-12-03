@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auctions.Migrations
 {
     [DbContext(typeof(AuctionsContext))]
-    [Migration("20201201121412_DatabaseSingleMigrations")]
-    partial class DatabaseSingleMigrations
+    [Migration("20201203030605_Database")]
+    partial class Database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,16 +100,12 @@ namespace Auctions.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<float>("price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("tokens")
-                        .HasColumnType("int");
-
-                    b.Property<int>("type")
-                        .HasColumnType("int");
+                    b.Property<string>("package")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("user_id")
+                        .IsRequired()
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("id");
@@ -229,15 +225,15 @@ namespace Auctions.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f3638044-67ba-4fed-9f2a-7c72034a6405",
-                            ConcurrencyStamp = "ea61ad1b-2ec2-4169-ab81-31688328064b",
+                            Id = "22da443b-c842-4275-a65c-0a45d403fe35",
+                            ConcurrencyStamp = "1f1bd27f-e0e6-4df4-94bd-7545beefec91",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "50d74d6f-66a3-43ea-b41d-5912d8f7053c",
-                            ConcurrencyStamp = "5a338356-901e-4afb-97ee-83c08ee87a23",
+                            Id = "5c40a85a-c81e-4774-bb5f-7546de7dc4d6",
+                            ConcurrencyStamp = "cfcc8a20-6df2-4974-b4e1-8194b1138caa",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -369,7 +365,9 @@ namespace Auctions.Migrations
                 {
                     b.HasOne("Auctions.Models.Database.User", "user")
                         .WithMany("orders")
-                        .HasForeignKey("user_id");
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

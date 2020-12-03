@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Auctions.Migrations
 {
-    public partial class DatabaseSingleMigrations : Migration
+    public partial class Database : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -192,10 +192,8 @@ namespace Auctions.Migrations
                 {
                     id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    user_id = table.Column<string>(nullable: true),
-                    tokens = table.Column<int>(nullable: false),
-                    price = table.Column<float>(nullable: false),
-                    type = table.Column<int>(nullable: false),
+                    user_id = table.Column<string>(nullable: false),
+                    package = table.Column<string>(nullable: false),
                     date = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -206,7 +204,7 @@ namespace Auctions.Migrations
                         column: x => x.user_id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,12 +238,12 @@ namespace Auctions.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "f3638044-67ba-4fed-9f2a-7c72034a6405", "ea61ad1b-2ec2-4169-ab81-31688328064b", "User", "USER" });
+                values: new object[] { "22da443b-c842-4275-a65c-0a45d403fe35", "1f1bd27f-e0e6-4df4-94bd-7545beefec91", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "50d74d6f-66a3-43ea-b41d-5912d8f7053c", "5a338356-901e-4afb-97ee-83c08ee87a23", "Admin", "ADMIN" });
+                values: new object[] { "5c40a85a-c81e-4774-bb5f-7546de7dc4d6", "cfcc8a20-6df2-4974-b4e1-8194b1138caa", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
