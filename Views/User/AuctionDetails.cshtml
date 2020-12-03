@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Identity;
 @using Auctions.Models.Database;
 @using System.Security.Claims;
+@using System.Globalization;
 
 @model Auctions.Models.Database.Auction
 
@@ -25,12 +26,14 @@
             id = claim.Value;
         }
     }
+
+    await Html.RenderPartialAsync("signalRScriptsPartial");
 }
 
 <div class="row">
     <div class="col-xl-6 text-center">
         <div class="container">
-            <div class="card" style="width:500px; height:900px">
+            <div class="card" style="width:500px; height:1000px">
                 <div class="card-header">
                     @if(sign_in_manager.IsSignedIn(User) && role == "User" && @Model.user_id == user_id) {
                         TempData["tab"] = "HomeTab";
@@ -41,6 +44,7 @@
                 </div>
                 <img class="card-img-top" src="data:image/png;base64,@image" style="width:100%; height:70%">
                 <div class="card-body">
+                    <h4 class="card-text text-dark">@Model.description</h4>
 
                     @if(@time_left.Hours == 0) {
                         <h5 class="card-text text-danger timer">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
@@ -49,18 +53,29 @@
                     }
 
                     @{
-                        float price = Model.price_increase;
-                        string price_format = "";
+                        float starting_price_ = Model.starting_price;
+                        float price_ = starting_price_ + Model.price_increase;
+                        string specifier = "C";
+                        CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
-                        if(price > 999) {
-                            price_format = price.ToString();
-                            price_format = price_format.Substring(price_format.Length - 3, price_format.Length - 1);
-                            price /= 1000;
-                            <h5 class="card-text text-success">$@price,@price_format.00</h5>
-                        } else if(price == 0) {
-                            <h5 class="card-text text-secondary">$0.00</h5>
+                        string starting_price = starting_price_.ToString(specifier, culture);
+                        string price = price_.ToString(specifier, culture);
+
+                        <h5 class="card-text text-dark" style="display:inline-block">Starting Price: </h5>
+
+                        if(starting_price_ == 0) {
+                            <h5 class="card-text text-secondary" style="display:inline-block">$0</h5>
                         } else {
-                            <h5 class="card-text text-success">$@price.00</h5>
+                            <h5 class="card-text text-primary" style="display:inline-block">@starting_price</h5>
+                        }
+
+                        <br>
+                        <h5 class="card-text text-dark" style="display:inline-block">Current Price: </h5>
+
+                        if(price_ == 0) {
+                            <h5 class="card-text text-secondary" style="display:inline-block">@price</h5>
+                        } else {
+                            <h5 class="card-text text-success" style="display:inline-block">@price</h5>
                         }
                     }  
 
@@ -99,7 +114,7 @@
             @foreach(var bid in bids) {
                 <h5 class="text-dark"> @bid.user.UserName </h5>
 
-                if(cnt++ == 10) {
+                if(++cnt == 10) {
                     break;
                 }
 

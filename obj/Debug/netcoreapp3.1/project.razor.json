@@ -14447,6 +14447,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\Shared\\SignalRScriptsPartial.cshtml",
+      "TargetPath": "Views\\Shared\\SignalRScriptsPartial.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\Home\\Index.cshtml",
       "TargetPath": "Views\\Home\\Index.cshtml",
       "FileKind": "mvc"

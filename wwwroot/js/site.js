@@ -88,6 +88,18 @@ function getTokens() {
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/update").build()
 
+function handelError(error) {
+    alert(error);
+}
+
+connection.start().then(
+    function() {
+        var auction_id = $("#auction_id").val();
+        connection.invoke("AddGroup", auction_id)
+                .catch(handleError)
+    }
+).catch(handleError)
+
 connection.on(
     "Bid",
     function() {

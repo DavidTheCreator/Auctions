@@ -52,9 +52,9 @@ namespace Auctions {
                 }
             );
 
-            services.AddScoped<IUserClaimsPrincipalFactory<User>, ClaimFactory> ( );
+            services.AddScoped<IUserClaimsPrincipalFactory<User>, ClaimFactory>();
 
-            services.AddSignalR ( );
+            services.AddSignalR();
 
             services.AddControllersWithViews();
         }
