@@ -401,6 +401,7 @@ namespace Auctions.Controllers {
         public async Task<IActionResult> AuctionDetails(int id) {
             var auction = await context.auctions
                                     .Where(auction => auction.id == id)
+                                    .Include(auction => auction.bids).ThenInclude(bid => bid.user)
                                     .FirstOrDefaultAsync();
 
             User user = await user_manager.GetUserAsync(base.User);
@@ -475,7 +476,7 @@ namespace Auctions.Controllers {
             await context.SaveChangesAsync();
 
             TempData["button"] = "success";
-            TempData["action"] = "Your have successfully made a bid!";
+            TempData["action"] = "You have successfully made a bid!";
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }

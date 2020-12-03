@@ -48,11 +48,21 @@
                         <h5 class="card-text">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
                     }
 
-                    @if(@Model.price_increase > 0) {
-                        <h5 class="card-text text-success">$@Model.price_increase</h5>
-                    } else {
-                        <h5 class="card-text text-secondary">$@Model.price_increase</h5>
-                    }
+                    @{
+                        float price = Model.price_increase;
+                        string price_format = "";
+
+                        if(price > 999) {
+                            price_format = price.ToString();
+                            price_format = price_format.Substring(price_format.Length - 3, price_format.Length - 1);
+                            price /= 1000;
+                            <h5 class="card-text text-success">$@price,@price_format.00</h5>
+                        } else if(price == 0) {
+                            <h5 class="card-text text-secondary">$0.00</h5>
+                        } else {
+                            <h5 class="card-text text-success">$@price.00</h5>
+                        }
+                    }  
 
                     @if(@Model.bids != null && @Model.bids.LastOrDefault() != null) {
                         <p class="card-text"><small class="text-muted">@Model.bids.LastOrDefault().user.UserName</small></p>
@@ -82,17 +92,20 @@
         @if(Model.bids != null) {
             <h3 class="text-dark">Last 10 bidders:</h3>
             <br>
+
             var bids = Model.bids.OrderByDescending(bid => bid.time);
             int cnt = 0;
 
             @foreach(var bid in bids) {
                 <h5 class="text-dark"> @bid.user.UserName </h5>
+
                 if(cnt++ == 10) {
                     break;
                 }
 
                 <br>
             }
+            
         } else {
             <h3 class="text-dark">Still no bidders.</h3>
         }

@@ -41,7 +41,7 @@
                 cnt--;
 
                 <div class="col-xl-3">
-                    <div class="card mt-4" style="width:250px; height:400px">
+                    <div class="card mt-4" style="width:250px; height:460px">
                         <div class="card-header text-center">
                             <h5>
                                 <a class="text-primary" asp-controller="User" asp-action="AuctionDetails" asp-route-id="@auction.id">@auction.name</a>
@@ -55,11 +55,21 @@
                                 <h5 class="card-text">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
                             }
 
-                            @if(@auction.price_increase > 0) {
-                                <h5 class="card-text text-success">$@auction.price_increase</h5>
-                            } else {
-                                <h5 class="card-text text-secondary">$@auction.price_increase</h5>
-                            }
+                            @{
+                                float price = auction.price_increase;
+                                string price_format = "";
+
+                                if(price > 999) {
+                                    price_format = price.ToString();
+                                    price_format = price_format.Substring(price_format.Length - 3, price_format.Length - 1);
+                                    price /= 1000;
+                                    <h5 class="card-text text-success">$@price,@price_format.00</h5>
+                                } else if(price == 0) {
+                                    <h5 class="card-text text-secondary">$0.00</h5>
+                                } else {
+                                    <h5 class="card-text text-success">$@price.00</h5>
+                                }
+                            }  
 
                             @if(@auction.bids != null && @auction.bids.LastOrDefault() != null) {
                                 <p class="card-text"><small class="text-muted">@auction.bids.LastOrDefault().user.UserName</small></p>
