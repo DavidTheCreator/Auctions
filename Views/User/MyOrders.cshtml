@@ -1,11 +1,9 @@
-@using static Auctions.Models.Database.tokens;
-@using static Auctions.Models.Database.prices;
-
 @model IEnumerable<Auctions.Models.Database.Order>
 
 @{
     ViewData["Title"] = "My Orders";
     string button_class = (string) TempData["button"];
+    int current_page = (int) TempData["current_page"];
     int num_pages = (int) TempData["num_pages"];
     int cnt = Model.Count();
 }
@@ -18,52 +16,8 @@
         </div>
     }
 </div>
-
-<table class="table">
-    <thead class="thead-dark">
-        @if(cnt > 0) {
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Package Type</th>
-                <th scope="col">Date</th>
-                <th scope="col">Tokens</th>
-                <th scope="col">Price</th>
-            </tr>
-        }
-    </thead>
-    <tbody>
-        @foreach(var order in Model) {
-            cnt--;
-            int tokens = (int) Enum.Parse(typeof(Auctions.Models.Database.tokens), order.package);
-            int price = (int) Enum.Parse(typeof(Auctions.Models.Database.prices), order.package);
-            <tr>
-                <td>@order.id</td>
-                <td>@order.package</td>
-                <td>@order.date</td>
-                <td>@tokens</td>
-                <td>@price</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-@if(cnt == Model.Count()) {
-    <div class="text-center">
-        <h3>No Orders</h3>
+<div class="text-center">
+    <div id="orders">
+        @{ await Html.RenderPartialAsync("MyOrdersPartial", Model); }
     </div>
-}
-
-<div class="row mt-5 justify-content-center">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-
-            @for(int i = 0; i < num_pages; i++) {
-                int index = i + 1;
-                <li class="page-item">
-                    <button class="page-link" onclick="filter(@index);">@index</button>
-                </li>
-            }
-
-        </ul>
-    </nav>
 </div>

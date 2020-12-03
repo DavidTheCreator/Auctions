@@ -14482,6 +14482,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\MyOrdersPartial.cshtml",
+      "TargetPath": "Views\\User\\MyOrdersPartial.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\Admin\\Auctions.cshtml",
       "TargetPath": "Views\\Admin\\Auctions.cshtml",
       "FileKind": "mvc"

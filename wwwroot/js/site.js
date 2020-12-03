@@ -23,3 +23,17 @@ function filter(page) {
             error: function(response) {}
         })
 }
+
+function orders_page(page) {
+    $.ajax({
+        type:"POST",
+        url:"/User/MyOrdersPage",
+        data: {
+            "page":page
+        },
+        success: function(response) {
+            document.getElementById("orders").innerHTML = response;
+        },
+        error: function(response) {}
+    })
+}

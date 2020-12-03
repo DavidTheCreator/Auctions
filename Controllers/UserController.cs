@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Auctions.Models.Database;
 using Auctions.Models.View;
 using AutoMapper;
@@ -341,21 +342,45 @@ namespace Auctions.Controllers {
         }
 
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> MyOrders() {
-            int limit = 10;
+        public async Task<IActionResult> MyOrders(FilterModel filter) {
+            int limit = 5;
             User user = await user_manager.GetUserAsync(base.User);
 
             var orders = await context.orders
                                     .Where(order => order.user_id == user.Id)
+                                    .Take(limit)
                                     .OrderBy(order => order.date)
                                     .ToListAsync();
             
             TempData["current_page"] = 1;
             TempData["num_pages"] = (int) Math
-                                            .Ceiling((double) orders
+                                            .Ceiling((double) context.orders
+                                            .Where(order => order.user_id == user.Id)
                                             .Count() / limit);
             
-            return View(orders);
+            return View("MyOrders", orders);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> MyOrdersPage(FilterModel filter) {
+            int limit = 5;
+            User user = await user_manager.GetUserAsync(base.User);
+
+            IList<Order> orders = await context.orders
+                                            .Where(order => order.user_id == user.Id)
+                                            .Skip((filter.page - 1) * limit)
+                                            .Take(limit)
+                                            .OrderBy(order => order.date)
+                                            .ToListAsync();     
+
+            TempData["current_page"] = filter.page;
+            TempData["num_pages"] = (int) Math
+                                            .Ceiling((double) context.orders
+                                            .Where(order => order.user_id == user.Id)
+                                            .Count() / limit);
+
+            return PartialView("MyOrdersPartial", orders);
         }
 
         [Authorize(Roles = "User")]
@@ -398,15 +423,24 @@ namespace Auctions.Controllers {
         public async Task<IActionResult> PurchaseTokens(PurchaseTokensModel model) {
             User user = await user_manager.GetUserAsync(base.User);
 
+            int index = model.package.IndexOf(' ');
+            string package = model.package.Substring(0, index);
+
+            user.tokens += (int) Enum.Parse(typeof(Auctions.Models.Database.tokens), package);
+            await user_manager.UpdateAsync(user);
+
             Order order = new Order() {
                 id = model.id,
-                package = model.package,
+                package = package,
                 date = DateTime.Now,
                 user_id = user.Id
             };
 
             await context.orders.AddAsync(order);
             await context.SaveChangesAsync();
+
+            TempData["button"] = "success";
+            TempData["action"] = string.Format("You have successfully purchased the {0} package!", package);
 
             return RedirectToAction(nameof(UserController.MyOrders), "User");
         }
@@ -425,8 +459,20 @@ namespace Auctions.Controllers {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            
+            auction.price_increase += 1000;
+            context.auctions.Update(auction);
 
+            user.tokens -= 1;
+            await user_manager.UpdateAsync(user);
+
+            Bid bid = new Bid() {
+                user_id = user.Id,
+                auction_id = id,
+                time = DateTime.Now
+            };
+
+            await context.bids.AddAsync(bid);
+            await context.SaveChangesAsync();
 
             TempData["button"] = "success";
             TempData["action"] = "Your have successfully made a bid!";

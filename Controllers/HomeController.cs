@@ -34,7 +34,7 @@ namespace Auctions.Controllers {
 
         [AllowAnonymous]
         public async Task<IActionResult> Index() {
-            int limit = 6;
+            int limit = 8;
 
             IList<Auction> updated_auctions = context.auctions
                                         .Where(auction => (auction.state != state.EXPIRED 
@@ -74,7 +74,7 @@ namespace Auctions.Controllers {
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Filter(FilterModel filter) {
-            int limit = 6;
+            int limit = 8;
 
             IQueryable<Auction> auctions = context.auctions;
             
@@ -103,7 +103,7 @@ namespace Auctions.Controllers {
 
             TempData["current_page"] = filter.page;
             TempData["num_pages"] = (int) Math
-                                            .Ceiling((double) auctions_
+                                            .Ceiling((double) auctions
                                             .Count() / limit);
 
             return PartialView("IndexPartial", auctions_);

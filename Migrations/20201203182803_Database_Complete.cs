@@ -237,12 +237,12 @@ namespace Auctions.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "89a16ae3-c9a1-4904-b8ef-1a9e169403b7", "36097878-76f3-4307-acac-d0f2e3b7f72e", "User", "USER" });
+                values: new object[] { "d84b9515-e420-4150-85ac-6090c0c44a44", "0d462006-43bd-4cfd-85c4-b43154d0742b", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "655e1a54-4c9f-45ad-bcf2-c91dca88ce4a", "f4291ff1-a172-4b33-b4bf-1fa05379c64c", "Admin", "ADMIN" });
+                values: new object[] { "fa87eaad-4c6f-4693-b5e0-4e8dfda0a7c8", "58b096f1-bafd-4bbe-bf44-a24790a7bcc5", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

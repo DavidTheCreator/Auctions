@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auctions.Migrations
 {
     [DbContext(typeof(AuctionsContext))]
-    [Migration("20201203170612_Database_Complete")]
+    [Migration("20201203182803_Database_Complete")]
     partial class Database_Complete
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,15 +222,15 @@ namespace Auctions.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "89a16ae3-c9a1-4904-b8ef-1a9e169403b7",
-                            ConcurrencyStamp = "36097878-76f3-4307-acac-d0f2e3b7f72e",
+                            Id = "d84b9515-e420-4150-85ac-6090c0c44a44",
+                            ConcurrencyStamp = "0d462006-43bd-4cfd-85c4-b43154d0742b",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "655e1a54-4c9f-45ad-bcf2-c91dca88ce4a",
-                            ConcurrencyStamp = "f4291ff1-a172-4b33-b4bf-1fa05379c64c",
+                            Id = "fa87eaad-4c6f-4693-b5e0-4e8dfda0a7c8",
+                            ConcurrencyStamp = "58b096f1-bafd-4bbe-bf44-a24790a7bcc5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

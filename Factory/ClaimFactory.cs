@@ -31,6 +31,10 @@ namespace Auctions.Factories {
                 new Claim("full_name", user.first_name + " " + user.last_name)
             );
 
+            claims_identity.AddClaim(
+                new Claim("tokens", user.tokens.ToString())
+            );
+
             IList<string> roles = await this.user_manager.GetRolesAsync(user);
 
             foreach(string role in roles) {

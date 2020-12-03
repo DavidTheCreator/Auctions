@@ -7,6 +7,7 @@
 @{
     string role = "";
     string full_name = "";
+    string tokens = "";
     foreach(System.Security.Claims.Claim claim in User.Claims) {
         if(claim.Type.Equals(ClaimTypes.Role)) {
             role = claim.Value;
@@ -14,6 +15,10 @@
 
         if(claim.Type.Equals("full_name")) {
             full_name = claim.Value;
+        }
+
+        if(claim.Type.Equals("tokens")) {
+            tokens = claim.Value;
         }
     }
 }
@@ -34,7 +39,11 @@
                 @if(sign_in_manager.IsSignedIn(User) && role == "Admin") {
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Human Trafficking Website</a>
                 } else if(sign_in_manager.IsSignedIn(User) && role == "User") {
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name</a>
+                    if(tokens == "0") {
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name, You don't have any tokens left</a>
+                    } else {
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name, You have @tokens tokens left</a>
+                    }
                 } else {
                      <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Auctions Website</a>
                 }

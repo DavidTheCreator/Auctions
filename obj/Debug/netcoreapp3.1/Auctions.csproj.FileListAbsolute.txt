@@ -378,3 +378,4 @@ C:\Users\38160\Desktop\Faks\IEP\Auctions\Auctions\obj\Debug\netcoreapp3.1\Razor\
 C:\Users\38160\Desktop\Faks\IEP\Auctions\Auctions\obj\Debug\netcoreapp3.1\Razor\Views\Home\IndexPartial.cshtml.g.cs
 C:\Users\38160\Desktop\Faks\IEP\Auctions\Auctions\obj\Debug\netcoreapp3.1\Razor\Views\User\MyOrders.cshtml.g.cs
 C:\Users\38160\Desktop\Faks\IEP\Auctions\Auctions\obj\Debug\netcoreapp3.1\Razor\Views\User\PurchaseTokens.cshtml.g.cs
+C:\Users\38160\Desktop\Faks\IEP\Auctions\Auctions\obj\Debug\netcoreapp3.1\Razor\Views\User\MyOrdersPartial.cshtml.g.cs
