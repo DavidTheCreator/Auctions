@@ -1,26 +1,25 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-function filter(page) {
-    var auction_name = document.getElementById("auction_name").value;
-    var from_price = document.getElementById("from_price").value;
-    var to_price = document.getElementById("to_price").value;
-    var state = document.getElementById("state").value;
+// Write your JavaScript code.
 
+function filter(page) {
     $.ajax({
             type:"POST",
             url:"/Home/Filter",
             data: {
-                "auction_name":auction_name, 
-                "from_price":from_price, 
-                "to_price":to_price, 
-                "state":state, 
+                "auction_name":$("#auction_name").val(), 
+                "from_price":$("#from_price").val(), 
+                "to_price":$("to_price").val(), 
+                "state":$("#state").val(), 
                 "page":page
             },
             success: function(response) {
-                document.getElementById("auctions").innerHTML = response;
+                $("#auctions").html(response);
             },
-            error: function(response) {}
+            error: function(response) {
+                alert(response);
+            }
         })
 }
 
@@ -32,9 +31,11 @@ function ordersPage(page) {
             "page":page
         },
         success: function(response) {
-            document.getElementById("orders").innerHTML = response;
+            $("#orders").html(response);
         },
-        error: function(response) {}
+        error: function(response) {
+            alert(response);
+        }
     })
 }
 
@@ -75,41 +76,93 @@ function updateTimer() {
 
 setInterval(updateTimer, 1000)
 
-function getTokens() {
-    $.ajax({
-        type:"POST",
-        url:"/User/MyTokens",
-        success: function(response) {
-            $("#tokens").val(response);
-        },
-        error: function(response) {}
-    })
-}
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/update").build()
+var connection = new signalR.HubConnectionBuilder().withUrl("/update").build();
 
-function handelError(error) {
+function handleError(error) {
     alert(error);
 }
 
 connection.start().then(
     function() {
         var auction_id = $("#auction_id").val();
-        connection.invoke("AddGroup", auction_id)
-                .catch(handleError)
+        if(auction_id != null) {
+            connection.invoke("AddToGroup", auction_id)
+        }
     }
 ).catch(handleError)
 
-connection.on(
-    "Bid",
-    function() {
-        getTokens();
-    }
-);
 
 connection.on(
-    "PurchaseTokens",
+    "UpdateIndex",
     function() {
+        filter();
         getTokens();
     }
-);
+)
+
+connection.on(
+    "UpdateAuctionDetails",
+    function() {
+        $.ajax({
+            type:"GET",
+            url:"/User/GetAuctionDetails",
+            data: {
+                "id": $("#auction_id").val()
+            },
+            success: function(response) {
+                getTokens();
+                $("auction").html(response);
+            },
+            error: function(response) {
+                alert(response);
+            }
+        })
+    }
+)
+
+function getTokens() {
+    $.ajax({
+        type:"GET",
+        url:"/User/MyTokens",
+        success: function(response) {
+            $("#user_tokens").html(response + "Tokens");
+        },
+        error: function(response) {
+            alert(response);
+        }
+    })
+}
+
+function purchaseTokens() {
+    $.ajax({
+        type:"GET",
+        url:"/User/PurchaseTokens",
+        success: function(response) {
+            getTokens();
+        },
+        error: function(response) {
+            alert(response);
+        }
+    })
+}
+
+function bid(auction_id) {
+        $.ajax({
+            type:"GET",
+            url:"/User/Bid",
+            data: {
+                "id": auction_id
+            },
+            success: function(response) {
+                connection.invoke("BidInIndex").catch(handleError);
+                connection.invoke("BidInAuctionDetails", auction_id).catch(handleError);
+
+                getTokens(); 
+            },
+            error: function(response) {
+                alert(response)
+            }
+        }
+    )
+}

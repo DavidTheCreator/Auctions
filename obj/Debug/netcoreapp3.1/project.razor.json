@@ -14407,6 +14407,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\AuctionDetailsPartial.cshtml",
+      "TargetPath": "Views\\User\\AuctionDetailsPartial.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\MyAuctions.cshtml",
       "TargetPath": "Views\\User\\MyAuctions.cshtml",
       "FileKind": "mvc"
@@ -14454,11 +14459,6 @@
     {
       "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\Home\\Index.cshtml",
       "TargetPath": "Views\\Home\\Index.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\Home\\Privacy.cshtml",
-      "TargetPath": "Views\\Home\\Privacy.cshtml",
       "FileKind": "mvc"
     },
     {

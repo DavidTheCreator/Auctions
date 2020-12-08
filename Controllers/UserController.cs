@@ -196,6 +196,7 @@ namespace Auctions.Controllers {
             
             await sign_in_manager.RefreshSignInAsync(user);
 
+            TempData["button"] = "success";
             TempData["action"] = "User Profile successfully updated!";
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -413,6 +414,15 @@ namespace Auctions.Controllers {
             return View(auction);
         }
 
+        public async Task<IActionResult> GetAuctionDetails(int id) {
+            var auction = await context.auctions
+                                    .Where(auction => auction.id == id)
+                                    .Include(auction => auction.bids).ThenInclude(bid => bid.user)
+                                    .FirstOrDefaultAsync();
+            
+            return PartialView("AuctionDetailsPartial", auction);
+        }
+
         [Authorize(Roles = "User")]
         public IActionResult PurchaseTokens() {
             return View();
@@ -469,16 +479,17 @@ namespace Auctions.Controllers {
                                 .Where(auction => auction.id == id)
                                 .FirstOrDefaultAsync();
 
-            if(user.tokens == 0) {
+            if(user.tokens * 1000 < auction.starting_price + auction.price_increase) {
                 TempData["button"] = "danger";
-                TempData["action"] = "You don't have any tokens left!";
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                TempData["action"] = "You don't have enough tokens left!";
+                return Json(false);
+                //return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             auction.price_increase += 1000;
             context.auctions.Update(auction);
 
-            user.tokens -= 1;
+            user.tokens--;
             await user_manager.UpdateAsync(user);
 
             Bid bid = new Bid() {
@@ -492,8 +503,8 @@ namespace Auctions.Controllers {
 
             TempData["button"] = "success";
             TempData["action"] = "You have successfully made a bid!";
-
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return Json(true);
+            //return RedirectToAction(nameof(HomeController.Index), "Home");
         }
     }
 }

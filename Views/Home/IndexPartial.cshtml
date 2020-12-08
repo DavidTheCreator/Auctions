@@ -39,13 +39,16 @@
             @foreach(var auction in Model) {
                 string image = Convert.ToBase64String(auction.image);
                 var time_left = auction.closes_at - DateTime.Now;
+                if(time_left < TimeSpan.Zero) {
+                    time_left = TimeSpan.Zero;
+                }
                 cnt--;
 
                 <div class="col-xl-3">
                     <div class="card mt-4" style="width:250px; height:460px">
                         <div class="card-header text-center">
                             <h5>
-                                <a class="text-primary" asp-controller="User" asp-action="AuctionDetails" asp-route-id="@auction.id">@auction.name</a>
+                                <a class="text-primary @auction.id" asp-controller="User" asp-action="AuctionDetails" asp-route-id="@auction.id">@auction.name</a>
                             </h5>
                         </div>
                         <img class="card-img-top" src="data:image/png;base64,@image" style="width:100%; height:50%">
@@ -75,14 +78,14 @@
                             }
 
                             @if(sign_in_manager.IsSignedIn(User) && role == "Admin") {
-                                <button type="button" class="btn btn-primary" style="width:30%" disabled>ADMIN</button>
+                                <button type="button" class="btn btn-primary" style="width:40%" disabled>ADMIN</button>
                             } else if(sign_in_manager.IsSignedIn(User) && role == "User") {
                                 if(@auction.user_id == id) {
                                     <button type="button" class="btn btn-primary" style="width:60%" disabled>MY AUCTION</button>
                                 }
                                 else if(@auction.state != @Auctions.Models.Database.state.SOLD) {
                                     <button type="button" class="btn btn-warning" style="width:40%">
-                                        <a class="text-white" asp-controller="User" asp-action="Bid" asp-route-id="@auction.id">BID</a>
+                                        <a class="text-white" asp-controller="User" asp-action="Bid" asp-route-id="@auction.id" onclick="bid(@auction.id);">BID</a>
                                     </button>
                                 } else {
                                     <button type="button" class="btn btn-secondary" style="width:40%" disabled>SOLD</button>
@@ -100,7 +103,7 @@
 </div>
 
 @if(cnt == Model.Count()) {
-    <div class="text-center">
+    <div class="text-center mt-5">
         <h3>No Auctions</h3>
     </div>
 }

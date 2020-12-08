@@ -7,7 +7,6 @@
 @{
     string role = "";
     string full_name = "";
-    string tokens = "";
     foreach(System.Security.Claims.Claim claim in User.Claims) {
         if(claim.Type.Equals(ClaimTypes.Role)) {
             role = claim.Value;
@@ -15,10 +14,6 @@
 
         if(claim.Type.Equals("full_name")) {
             full_name = claim.Value;
-        }
-
-        if(claim.Type.Equals("tokens")) {
-            tokens = claim.Value;
         }
     }
 }
@@ -39,13 +34,9 @@
                 @if(sign_in_manager.IsSignedIn(User) && role == "Admin") {
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Human Trafficking Website</a>
                 } else if(sign_in_manager.IsSignedIn(User) && role == "User") {
-                    if(tokens == "0") {
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name, You don't have any tokens left</a>
-                    } else {
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name, You have <h5 id="tokens" style="display:inline-block;">@tokens</h5> tokens left</a>
-                    }
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Welcome @full_name</a>
                 } else {
-                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Auctions Website</a>
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Auctions Website</a>
                 }
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -62,12 +53,6 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2020 - Auctions - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

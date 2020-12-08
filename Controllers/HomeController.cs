@@ -36,6 +36,25 @@ namespace Auctions.Controllers {
         public async Task<IActionResult> Index() {
             int limit = 8;
 
+            UpdateIndex();
+
+            var auctions = await context.auctions
+                                    .Where(auction => (auction.state == state.DRAFT))
+                                    .Take(limit)
+                                    .Include(auction => auction.bids).ThenInclude(auction => auction.user)
+                                    .OrderByDescending(auction => auction.created_at)
+                                    .ToListAsync();
+
+            TempData["current_page"] = 1;
+            TempData["num_pages"] = (int) Math
+                                            .Ceiling((double) context.auctions
+                                            .Where(auction => (auction.state == state.DRAFT))
+                                            .Count() / limit);
+
+            return View("Index", auctions);
+        }
+
+        public void UpdateIndex() {
             IList<Auction> updated_auctions = context.auctions
                                         .Where(auction => (auction.state != state.EXPIRED 
                                                         && auction.state != state.SOLD 
@@ -54,21 +73,7 @@ namespace Auctions.Controllers {
                 }
                 context.auctions.Update(auction);
             }
-
-            var auctions = await context.auctions
-                                    .Where(auction => (auction.state == state.DRAFT))
-                                    .Take(limit)
-                                    .Include(auction => auction.bids).ThenInclude(auction => auction.user)
-                                    .OrderByDescending(auction => auction.created_at)
-                                    .ToListAsync();
-
-            TempData["current_page"] = 1;
-            TempData["num_pages"] = (int) Math
-                                            .Ceiling((double) context.auctions
-                                            .Where(auction => (auction.state == state.DRAFT))
-                                            .Count() / limit);
-
-            return View("Index", auctions);
+            context.SaveChanges();
         }
 
         [HttpPost]
@@ -97,6 +102,7 @@ namespace Auctions.Controllers {
             IList<Auction> auctions_ = await auctions
                                                 .Where(auction => auction.state == state.DRAFT)
                                                 .Skip((filter.page - 1) * limit)
+                                                .Include(auction => auction.bids).ThenInclude(auction => auction.user)
                                                 .Take(limit)
                                                 .OrderByDescending(auction => auction.created_at)
                                                 .ToListAsync();
@@ -107,10 +113,6 @@ namespace Auctions.Controllers {
                                             .Count() / limit);
 
             return PartialView("IndexPartial", auctions_);
-        }
-
-        public IActionResult Privacy() {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

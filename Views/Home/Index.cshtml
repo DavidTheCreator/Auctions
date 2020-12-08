@@ -7,9 +7,9 @@
     int num_pages = (int) TempData["num_pages"];
     string button_class = (string) TempData["button"];
     int cnt = Model.Count();
-
-    await Html.RenderPartialAsync("signalRScriptsPartial");
 }
+
+@{ await Html.RenderPartialAsync("SignalRScriptsPartial"); }
 
 <div class="text-center">
     @if(TempData["action"] != null) {
@@ -29,8 +29,8 @@
         </div>
         <div class="col-xl-4">
             <div class="input-group">
-                <input type="number" id="from_price" onkeyup="filter(@current_page);" onchange="filter(@current_page);" class="form-control mr-1" placeholder="From Price">
-                <input type="number" id="to_price" onkeyup="filter(@current_page);" onchange="filter(@current_page);" class="form-control ml-1" placeholder="To Price">
+                <input type="number" min="0" id="from_price" onkeyup="filter(@current_page);" onchange="filter(@current_page);" class="form-control mr-1" placeholder="From Price">
+                <input type="number" min="0" id="to_price" onkeyup="filter(@current_page);" onchange="filter(@current_page);" class="form-control ml-1" placeholder="To Price">
             </div>
         </div>
         <div class="col-xl-4">
