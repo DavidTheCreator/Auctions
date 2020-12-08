@@ -335,7 +335,6 @@ namespace Auctions.Controllers {
 
             var auctions = await context.auctions
                                     .Where(auction => auction.user_id == user.Id)
-                                    .Where(auction => auction.state != state.DELETED)
                                     .OrderByDescending(auction => auction.created_at)
                                     .ToListAsync();
             return View(auctions);
@@ -388,8 +387,8 @@ namespace Auctions.Controllers {
             User user = await user_manager.GetUserAsync(base.User);
 
             var auctions = await context.auctions
-                                    .Where(auction => auction.state != state.SOLD)
-                                    .Include(auction => auction.bids)
+                                    .Where(auction => auction.state == state.SOLD)
+                                    .Include(auction => auction.bids).ThenInclude(bid => bid.user)
                                     .OrderByDescending(auction => auction.created_at)
                                     .ToListAsync();
 
@@ -482,8 +481,7 @@ namespace Auctions.Controllers {
             if(user.tokens * 1000 < auction.starting_price + auction.price_increase) {
                 TempData["button"] = "danger";
                 TempData["action"] = "You don't have enough tokens left!";
-                return Json(false);
-                //return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             auction.price_increase += 1000;

@@ -16,9 +16,6 @@ function filter(page) {
             },
             success: function(response) {
                 $("#auctions").html(response);
-            },
-            error: function(response) {
-                alert(response);
             }
         })
 }
@@ -32,9 +29,6 @@ function ordersPage(page) {
         },
         success: function(response) {
             $("#orders").html(response);
-        },
-        error: function(response) {
-            alert(response);
         }
     })
 }
@@ -71,6 +65,7 @@ function updateTimer() {
         }
 
         timer[i].textContent = hours + ":" + minutes + ":" + seconds;
+        //updateIndex
     }
 }
 
@@ -113,9 +108,6 @@ connection.on(
             success: function(response) {
                 getTokens();
                 $("auction").html(response);
-            },
-            error: function(response) {
-                alert(response);
             }
         })
     }
@@ -126,10 +118,7 @@ function getTokens() {
         type:"GET",
         url:"/User/MyTokens",
         success: function(response) {
-            $("#user_tokens").html(response + "Tokens");
-        },
-        error: function(response) {
-            alert(response);
+            $("#user_tokens").html(response + " Tokens");
         }
     })
 }
@@ -140,9 +129,16 @@ function purchaseTokens() {
         url:"/User/PurchaseTokens",
         success: function(response) {
             getTokens();
-        },
-        error: function(response) {
-            alert(response);
+        }
+    })
+}
+
+function confirmAuction() {
+    $.ajax({
+        type:"GET",
+        url:"/Admin/ConfirmAuction",
+        success: function(response) {
+            //updateIndex
         }
     })
 }
@@ -159,9 +155,6 @@ function bid(auction_id) {
                 connection.invoke("BidInAuctionDetails", auction_id).catch(handleError);
 
                 getTokens(); 
-            },
-            error: function(response) {
-                alert(response)
             }
         }
     )

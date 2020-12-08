@@ -39,7 +39,7 @@ namespace Auctions.Controllers {
             UpdateIndex();
 
             var auctions = await context.auctions
-                                    .Where(auction => (auction.state == state.DRAFT))
+                                    .Where(auction => (auction.state == state.OPEN || auction.state == state.SOLD))
                                     .Take(limit)
                                     .Include(auction => auction.bids).ThenInclude(auction => auction.user)
                                     .OrderByDescending(auction => auction.created_at)
@@ -48,7 +48,7 @@ namespace Auctions.Controllers {
             TempData["current_page"] = 1;
             TempData["num_pages"] = (int) Math
                                             .Ceiling((double) context.auctions
-                                            .Where(auction => (auction.state == state.DRAFT))
+                                            .Where(auction => (auction.state == state.OPEN || auction.state == state.SOLD))
                                             .Count() / limit);
 
             return View("Index", auctions);
@@ -59,17 +59,20 @@ namespace Auctions.Controllers {
                                         .Where(auction => (auction.state != state.EXPIRED 
                                                         && auction.state != state.SOLD 
                                                         && auction.state != state.DELETED))
+                                        .Include(auction => auction.bids)
                                         .ToList();
 
             foreach(Auction auction in updated_auctions) {
-                if(DateTime.Compare(auction.opens_at, DateTime.Now) == 0) {
-                    if(auction.state == state.DRAFT) {
-                        auction.state = state.EXPIRED;
-                    } else if(auction.state == state.READY) {
+                if(DateTime.Compare(auction.opens_at, DateTime.Now) < 0 && auction.state == state.DRAFT) {
+                    auction.state = state.EXPIRED;
+                } else if(DateTime.Compare(auction.opens_at, DateTime.Now) < 0 && auction.state == state.READY) {
                         auction.state = state.OPEN;
+                } else if(auction.state == state.OPEN && DateTime.Compare(auction.closes_at, DateTime.Now) < 0) {
+                    if(auction.bids != null) {
+                        auction.state = state.SOLD;
+                    } else {
+                        auction.state = state.EXPIRED;
                     }
-                } else if(auction.state == state.OPEN && DateTime.Compare(auction.closes_at, DateTime.Now) == 0) {
-                    auction.state = state.SOLD;
                 }
                 context.auctions.Update(auction);
             }
@@ -100,7 +103,7 @@ namespace Auctions.Controllers {
             }    
 
             IList<Auction> auctions_ = await auctions
-                                                .Where(auction => auction.state == state.DRAFT)
+                                                .Where(auction => auction.state == state.OPEN || auction.state == state.SOLD)
                                                 .Skip((filter.page - 1) * limit)
                                                 .Include(auction => auction.bids).ThenInclude(auction => auction.user)
                                                 .Take(limit)
