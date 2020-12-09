@@ -415,23 +415,23 @@ namespace Auctions.Controllers {
         }
 
         [Authorize(Roles = "User")]
-        public IActionResult PurchaseTokens() {
-            return View();
+        public IActionResult PurchaseTokensView() {
+            var model = new PurchaseTokensModel() {
+                package = "SILVER : 5 tokens : $1,000.00"
+            };
+            return View(model);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PurchaseTokens(PurchaseTokensModel model) {
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> PurchaseTokens(string selected_package) {
             User user = await user_manager.GetUserAsync(base.User);
 
-            int index = model.package.IndexOf(' ');
-            string package = model.package.Substring(0, index);
+            string package = selected_package;
 
             user.tokens += (int) Enum.Parse(typeof(Auctions.Models.Database.tokens), package);
             await user_manager.UpdateAsync(user);
 
             Order order = new Order() {
-                id = model.id,
                 package = package,
                 date = DateTime.Now,
                 user_id = user.Id
@@ -440,10 +440,7 @@ namespace Auctions.Controllers {
             await context.orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            TempData["button"] = "success";
-            TempData["action"] = string.Format("You have successfully purchased the {0} package!", package);
-
-            return RedirectToAction(nameof(UserController.MyOrders), "User");
+            return Ok("You have successfully made a payment!");
         }
 
         [Authorize(Roles = "User")]

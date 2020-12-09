@@ -1,0 +1,62 @@
+@model Auctions.Models.View.PurchaseTokensModel
+
+@{
+    ViewData["Title"] = "Purchase Tokens";
+
+    List<SelectListItem> packages = new List<SelectListItem>();    
+    
+    packages.Add(new SelectListItem("SILVER : 5 tokens : $1,000.00", "SILVER : 5 tokens : $1,000.00"));
+    packages.Add(new SelectListItem("GOLD : 10 tokens : $1,900.00", "GOLD : 10 tokens : $1,900.00"));
+    packages.Add(new SelectListItem("PLATINUM : 20 tokens : $3,600.00", "PLATINUM : 20 tokens : $3,600.00"));
+}
+
+<script src="https://www.paypal.com/sdk/js?client-id=AaL7WmawEhkq5zfKSigyX56FrkT4jSSRLgMQ83LDbXBLzL6Lb__Cm7kQjSAlPKj0Qa_IEcyv3I4HnzKl"></script>
+
+<h1>Purchase Tokens</h1>
+
+<div class="row">
+    <div class="offset-xl-4 col-xl-4">
+        <form enctype="multipart/form-data">
+            <div class="form-group" style="width:300px;">
+                <h3><label asp-for="package" class="control-label" style="margin-left:90px"></label></h3>
+                <select id="select_package" asp-for="package" class="form-control" asp-items="@packages"></select>
+                <span asp-validation-for="package" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="offset-xl-4 col-xl-4">
+        <div id="paypal" style="width:300px"></div>
+    </div>
+</div>
+
+<script>
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+            var package = document.getElementById("select_package").value.split(" ")[0];
+            var price = 1;
+
+            if(package == "GOLD") {
+                price = 2;
+            } else if (package == "PLATINUM") {
+                price = 3;
+            }
+
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: String(price)
+                    }
+                }]
+            })
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                var package = document.getElementById("select_package").value.split(" ")[0];
+                updateOrders(package);
+            })
+        }
+    }).render("#paypal")
+</script>

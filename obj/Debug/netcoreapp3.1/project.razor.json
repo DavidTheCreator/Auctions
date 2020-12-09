@@ -14442,11 +14442,6 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\PurchaseTokens.cshtml",
-      "TargetPath": "Views\\User\\PurchaseTokens.cshtml",
-      "FileKind": "mvc"
-    },
-    {
       "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\Register.cshtml",
       "TargetPath": "Views\\User\\Register.cshtml",
       "FileKind": "mvc"
@@ -14489,6 +14484,11 @@
     {
       "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\MyOrdersPartial.cshtml",
       "TargetPath": "Views\\User\\MyOrdersPartial.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\38160\\Desktop\\Faks\\IEP\\Auctions\\Auctions\\Views\\User\\PurchaseTokensView.cshtml",
+      "TargetPath": "Views\\User\\PurchaseTokensView.cshtml",
       "FileKind": "mvc"
     },
     {
