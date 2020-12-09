@@ -193,11 +193,8 @@ namespace Auctions.Controllers {
                     return View();
                 }
             }
-            
-            await sign_in_manager.RefreshSignInAsync(user);
 
-            TempData["button"] = "success";
-            TempData["action"] = "User Profile successfully updated!";
+            await sign_in_manager.RefreshSignInAsync(user);
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
@@ -302,16 +299,12 @@ namespace Auctions.Controllers {
             auction.closes_at = new DateTime(model.closes_at.Year, model.closes_at.Month, model.closes_at.Day,
                                              model.closes_at_time.Hour, model.closes_at_time.Minute, model.closes_at_time.Second);
             
-            context.auctions.Update(auction);
             await context.SaveChangesAsync();
 
             TempData["button"] = "success";
             TempData["action"] = string.Format("{0} successfully updated!", auction.name);
-            if((string) TempData["tab"] == "HomeTab") {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            } else {
-                return RedirectToAction(nameof(UserController.MyAuctions), "User");
-            }
+            
+            return RedirectToAction(nameof(UserController.MyAuctions), "User");
         }
 
         [Authorize(Roles = "User")]
@@ -320,7 +313,6 @@ namespace Auctions.Controllers {
                             .Where(auction => auction.id == id).FirstOrDefault();
 
             auction.state = state.DELETED;
-            context.auctions.Update(auction);
             await context.SaveChangesAsync();
 
             TempData["button"] = "danger";
@@ -474,21 +466,35 @@ namespace Auctions.Controllers {
         public async Task<IActionResult> Bid(int id) {
             User user = await user_manager.GetUserAsync(base.User);
 
+            var transaction = await context.Database.BeginTransactionAsync();
+
             Auction auction = await context.auctions
                                 .Where(auction => auction.id == id)
+                                .Include(auction => auction.bids).ThenInclude(bid => bid.user)
                                 .FirstOrDefaultAsync();
 
-            if(user.tokens * 1000 < auction.starting_price + auction.price_increase) {
-                TempData["button"] = "danger";
-                TempData["action"] = "You don't have enough tokens left!";
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+            if(auction == null) {
+                await transaction.RollbackAsync();
+                return BadRequest("Auction doesn't exist error!");
             }
+            ICollection<Bid> bids = auction.bids;
 
+            if(((bids.LastOrDefault() != null && bids.LastOrDefault().user_id != user.Id) || bids.LastOrDefault() == null) && user.tokens * 1000 <= auction.starting_price + auction.price_increase) {
+                await transaction.RollbackAsync();
+                return BadRequest("You don't have enough tokens left!");
+            }
+            
+            if(bids.LastOrDefault() != null) {
+                if(bids.LastOrDefault().user_id == user.Id) {
+                    user.tokens--;
+                } else {
+                    bids.LastOrDefault().user.tokens += (int)((auction.starting_price + auction.price_increase) / 1000);
+                    user.tokens -= (int)((auction.starting_price + auction.price_increase) / 1000) + 1;
+                }
+            } else {
+                user.tokens -= (int)((auction.starting_price + auction.price_increase) / 1000) + 1;
+            }
             auction.price_increase += 1000;
-            context.auctions.Update(auction);
-
-            user.tokens--;
-            await user_manager.UpdateAsync(user);
 
             Bid bid = new Bid() {
                 user_id = user.Id,
@@ -498,11 +504,9 @@ namespace Auctions.Controllers {
 
             await context.bids.AddAsync(bid);
             await context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
-            TempData["button"] = "success";
-            TempData["action"] = "You have successfully made a bid!";
-            return Json(true);
-            //return RedirectToAction(nameof(HomeController.Index), "Home");
+            return Ok("You have successfully made a bid!");
         }
     }
 }

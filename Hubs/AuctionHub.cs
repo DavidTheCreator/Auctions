@@ -12,7 +12,7 @@ namespace Auctions.Hubs {
         }
 
         public async Task BidInAuctionDetails(string group_id) {
-             await base.Clients.Group(group_id).SendAsync("UpdateAuctionDetails");
+             await base.Clients.Group(group_id).SendAsync("UpdateAuctionDetails", group_id);
         }
     }
 }

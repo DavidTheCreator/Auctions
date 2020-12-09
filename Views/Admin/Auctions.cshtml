@@ -1,7 +1,7 @@
 @model IEnumerable<Auctions.Models.Database.Auction>
 
 @{
-    ViewData["Title"] = "Manage Drafted Auctions";
+    ViewData["Title"] = "Manage Auctions";
     var button_class = TempData["button"];
     int cnt = Model.Count();
 }
@@ -25,6 +25,7 @@
                 <th scope="col">Starting Price</th>
                 <th scope="col">Opens at</th>
                 <th scope="col">Closes at</th>
+                <th scope="col">State</th>
                 <th scope="col">Confirm</th>
                 <th scope="col">Delete</th>
             </tr>
@@ -40,11 +41,33 @@
                 <td>@auction.starting_price</td>
                 <td>@auction.opens_at</td>
                 <td>@auction.closes_at</td>
-                <td>
-                    <button type="button" class="btn btn-primary">
-                        <a asp-controller="Admin" asp-action="ConfirmAuction" asp-route-id="@auction.id" class="text-white">Confirm</a>
-                    </button>
-                </td>
+                @{
+                    var button = "primary";
+                    @if(auction.state == Auctions.Models.Database.state.OPEN) {
+                        button = "warning";
+                    } else if (auction.state == Auctions.Models.Database.state.SOLD) {
+                        button = "success";
+                    } else if(auction.state == Auctions.Models.Database.state.EXPIRED) {
+                        button = "dark";
+                    } else if(auction.state == Auctions.Models.Database.state.DELETED) {
+                        button = "danger";
+                    }
+                    <td><h4><div class="badge badge-@button text-white">@auction.state</div></h4></td>
+                    
+                    if(auction.state == Auctions.Models.Database.state.DRAFT) {
+                        <td>
+                            <button type="button" class="btn btn-primary">
+                                <a asp-controller="Admin" asp-action="ConfirmAuction" asp-route-id="@auction.id" class="text-white">Confirm</a>
+                            </button>
+                        </td>
+                    } else {
+                        <td>
+                            <button type="button" class="btn btn-primary" disabled>
+                                <a class="text-white">Confirm</a>
+                            </button>
+                        </td>
+                    }
+                }
                 <td>
                     <button type="button" class="btn btn-danger">
                         <a asp-controller="Admin" asp-action="DeleteAuction" asp-route-id="@auction.id" class="text-white">Delete</a>

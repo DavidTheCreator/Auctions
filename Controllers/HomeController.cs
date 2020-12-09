@@ -63,7 +63,7 @@ namespace Auctions.Controllers {
                                         .ToList();
 
             foreach(Auction auction in updated_auctions) {
-                if(DateTime.Compare(auction.opens_at, DateTime.Now) < 0 && auction.state == state.DRAFT) {
+                if(DateTime.Compare(auction.opens_at, DateTime.Now) < 0 && auction.state == state.DRAFT || DateTime.Compare(auction.closes_at, DateTime.Now) < 0 && auction.price_increase == 0) {
                     auction.state = state.EXPIRED;
                 } else if(DateTime.Compare(auction.opens_at, DateTime.Now) < 0 && auction.state == state.READY) {
                         auction.state = state.OPEN;
@@ -74,7 +74,6 @@ namespace Auctions.Controllers {
                         auction.state = state.EXPIRED;
                     }
                 }
-                context.auctions.Update(auction);
             }
             context.SaveChanges();
         }
@@ -83,6 +82,8 @@ namespace Auctions.Controllers {
         [AllowAnonymous]
         public async Task<IActionResult> Filter(FilterModel filter) {
             int limit = 8;
+
+            UpdateIndex();
 
             IQueryable<Auction> auctions = context.auctions;
             
@@ -102,11 +103,16 @@ namespace Auctions.Controllers {
                                 .Where(auction => auction.starting_price + auction.price_increase <= filter.to_price);
             }    
 
+            if(filter.state == state.DRAFT) {
+                auctions = auctions.Where(auction => (auction.state == state.OPEN) || (auction.state == state.SOLD));
+            } else {
+                auctions = auctions.Where(auction => auction.state == filter.state);
+            }
+
             IList<Auction> auctions_ = await auctions
-                                                .Where(auction => auction.state == state.OPEN || auction.state == state.SOLD)
                                                 .Skip((filter.page - 1) * limit)
-                                                .Include(auction => auction.bids).ThenInclude(auction => auction.user)
                                                 .Take(limit)
+                                                .Include(auction => auction.bids).ThenInclude(auction => auction.user)
                                                 .OrderByDescending(auction => auction.created_at)
                                                 .ToListAsync();
 

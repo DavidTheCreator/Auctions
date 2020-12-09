@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Auctions.Migrations
 {
-    public partial class Database_Complete : Migration
+    public partial class Database : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -237,12 +237,12 @@ namespace Auctions.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "d5853084-a241-4c84-a7ba-53a3c9d45334", "fe088661-fca9-4bb3-b8af-89f85291171d", "User", "USER" });
+                values: new object[] { "714f367c-c451-441d-8e2d-3ce7afc9839b", "5f8a67a1-dafc-4d60-9184-872c8830de41", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "5e880cde-38c4-4436-a8a4-6adb2c49f4fd", "4ecbb95d-0566-4026-8fd0-d22749bd45f4", "Admin", "ADMIN" });
+                values: new object[] { "2ff20c42-d09f-4651-bebf-591cb0a68d08", "17737b6d-c16f-4287-b155-9300971d6a02", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

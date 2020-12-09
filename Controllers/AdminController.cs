@@ -46,7 +46,6 @@ namespace Auctions.Controllers {
             
             foreach(Auction auction in auctions) {
                 auction.state = state.SOLD;       
-                context.auctions.Update(auction);
             }
             await context.SaveChangesAsync();
 
@@ -57,8 +56,7 @@ namespace Auctions.Controllers {
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Auctions() {
-            var auctions = await context.auctions
-                                    .Where(auction => auction.state == state.DRAFT).ToListAsync();
+            var auctions = await context.auctions.ToListAsync();
             return View(auctions);
         }
 
@@ -68,7 +66,6 @@ namespace Auctions.Controllers {
                                     .Where(auction => auction.id == id).FirstOrDefaultAsync();
     
             auction.state = state.READY;       
-            context.auctions.Update(auction);
             await context.SaveChangesAsync();
 
             TempData["button"] = "success";
@@ -83,7 +80,6 @@ namespace Auctions.Controllers {
                                     .Where(auction => auction.id == id).FirstOrDefaultAsync();
     
             auction.state = state.DELETED;       
-            context.auctions.Update(auction);
             await context.SaveChangesAsync();
 
             TempData["button"] = "danger";

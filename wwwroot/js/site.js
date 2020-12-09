@@ -3,35 +3,41 @@
 
 // Write your JavaScript code.
 
-function filter(page) {
-    $.ajax({
-            type:"POST",
-            url:"/Home/Filter",
-            data: {
-                "auction_name":$("#auction_name").val(), 
-                "from_price":$("#from_price").val(), 
-                "to_price":$("to_price").val(), 
-                "state":$("#state").val(), 
-                "page":page
-            },
-            success: function(response) {
-                $("#auctions").html(response);
-            }
-        })
+var connection = new signalR.HubConnectionBuilder().withUrl("/update").build();
+
+function handleError(error) {
+    alert(error);
 }
 
-function ordersPage(page) {
-    $.ajax({
-        type:"POST",
-        url:"/User/MyOrdersPage",
-        data: {
-            "page":page
-        },
-        success: function(response) {
-            $("#orders").html(response);
-        }
-    })
+function handleSuccess(success) {
+    alert(success);
 }
+
+connection.start().then(
+    function() {
+        var auction_id = $("#auction_id").val();
+        if(auction_id != null) {
+            connection.invoke("AddToGroup", auction_id)
+        }
+    }
+).catch(handleError)
+
+
+connection.on(
+    "UpdateIndex",
+    function() {
+        filter();
+        getTokens();
+    }
+)
+
+connection.on(
+    "UpdateAuctionDetails",
+    function(id) {
+        getAuctionDetails(+id);
+        getTokens();
+    }
+)
 
 function updateTimer() {
     var timer = document.getElementsByClassName("timer");
@@ -65,53 +71,57 @@ function updateTimer() {
         }
 
         timer[i].textContent = hours + ":" + minutes + ":" + seconds;
-        //updateIndex
+
+        if (time_in_seconds <= 0) {
+            connection.invoke("BidInIndex").catch(handleError);
+        }
     }
 }
 
 setInterval(updateTimer, 1000)
 
-
-var connection = new signalR.HubConnectionBuilder().withUrl("/update").build();
-
-function handleError(error) {
-    alert(error);
-}
-
-connection.start().then(
-    function() {
-        var auction_id = $("#auction_id").val();
-        if(auction_id != null) {
-            connection.invoke("AddToGroup", auction_id)
-        }
-    }
-).catch(handleError)
-
-
-connection.on(
-    "UpdateIndex",
-    function() {
-        filter();
-        getTokens();
-    }
-)
-
-connection.on(
-    "UpdateAuctionDetails",
-    function() {
-        $.ajax({
-            type:"GET",
-            url:"/User/GetAuctionDetails",
+function filter(page) {
+    $.ajax({
+            type:"POST",
+            url:"/Home/Filter",
             data: {
-                "id": $("#auction_id").val()
+                "auction_name":$("#auction_name").val(), 
+                "from_price":$("#from_price").val(), 
+                "to_price":$("to_price").val(), 
+                "state":$("#state").val(), 
+                "page":page
             },
             success: function(response) {
-                getTokens();
-                $("auction").html(response);
+                $("#auctions").html(response);
             }
         })
-    }
-)
+}
+
+function ordersPage(page) {
+    $.ajax({
+        type:"POST",
+        url:"/User/MyOrdersPage",
+        data: {
+            "page":page
+        },
+        success: function(response) {
+            $("#orders").html(response);
+        }
+    })
+}
+
+function getAuctionDetails(auction_id) {
+    $.ajax({
+        type:"GET",
+        url:"/User/GetAuctionDetails",
+        data: {
+            "id": auction_id
+        },
+        success: function(response) {
+            $("#auction").html(response);
+        }
+    })
+}
 
 function getTokens() {
     $.ajax({
@@ -119,26 +129,6 @@ function getTokens() {
         url:"/User/MyTokens",
         success: function(response) {
             $("#user_tokens").html(response + " Tokens");
-        }
-    })
-}
-
-function purchaseTokens() {
-    $.ajax({
-        type:"GET",
-        url:"/User/PurchaseTokens",
-        success: function(response) {
-            getTokens();
-        }
-    })
-}
-
-function confirmAuction() {
-    $.ajax({
-        type:"GET",
-        url:"/Admin/ConfirmAuction",
-        success: function(response) {
-            //updateIndex
         }
     })
 }
@@ -152,9 +142,11 @@ function bid(auction_id) {
             },
             success: function(response) {
                 connection.invoke("BidInIndex").catch(handleError);
-                connection.invoke("BidInAuctionDetails", auction_id).catch(handleError);
-
+                connection.invoke("BidInAuctionDetails", auction_id+"").catch(handleError);
                 getTokens(); 
+                handleSuccess(response);
+            }, error: function(response) {
+                handleError(response.responseText);
             }
         }
     )

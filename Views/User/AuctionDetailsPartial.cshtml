@@ -42,13 +42,15 @@
                 <div class="card-body">
                     <h4 class="card-text text-dark">@Model.description</h4>
 
-                    @if(@time_left.Hours == 0) {
-                        <h5 class="card-text text-danger timer">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
-                    } else {
-                        <h5 class="card-text timer">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
-                    }
-
                     @{
+                        if(@Model.state != @Auctions.Models.Database.state.OPEN) {
+                                <h5 class="card-text text-danger timer">00:00:00</h5>
+                        } else if(@time_left.Hours == 0) {
+                            <h5 class="card-text text-danger timer">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
+                        } else {
+                            <h5 class="card-text timer">@time_left.Hours:@time_left.Minutes:@time_left.Seconds</h5>
+                        }
+                    
                         float starting_price_ = Model.starting_price;
                         float price_ = starting_price_ + Model.price_increase;
                         string specifier = "C";
@@ -73,26 +75,27 @@
                         } else {
                             <h5 class="card-text text-success" style="display:inline-block">@price</h5>
                         }
-                    }  
 
-                    @if(@Model.bids != null && @Model.bids.LastOrDefault() != null) {
-                        <p class="card-text"><small class="text-muted">@Model.bids.LastOrDefault().user.UserName</small></p>
-                    }
-                    @if(sign_in_manager.IsSignedIn(User) && role == "Admin") {
-                        <button type="button" class="btn btn-primary" style="width:20%" disabled>ADMIN</button>
-                    } else if(sign_in_manager.IsSignedIn(User) && role == "User") {
-                        if(@Model.user_id == id) {
-                            <button type="button" class="btn btn-primary" style="width:30%" disabled>MY AUCTION</button>
-                        } else if(@Model.state != @Auctions.Models.Database.state.SOLD) {
-                            <button type="button" class="btn btn-warning" style="width:20%" onclick="bid(@Model.id);">
-                                <a class="text-white" asp-controller="User" asp-action="Bid" asp-route-id="@Model.id">BID</a>
-                            </button>
-                        } else {
-                            <button type="button" class="btn btn-secondary" style="width:20%" disabled>SOLD</button>
+
+                        if(@Model.bids != null && @Model.bids.LastOrDefault() != null) {
+                            <p class="card-text"><small class="text-muted">@Model.bids.LastOrDefault().user.UserName</small></p>
                         }
-                    } else {
-                        <button type="button" class="btn btn-danger text-white" style="width:30%" disabled>Register/Log In</button>
-                    }
+                        if(sign_in_manager.IsSignedIn(User) && role == "Admin") {
+                            <button type="button" class="btn btn-primary" style="width:20%" disabled>ADMIN</button>
+                        } else if(sign_in_manager.IsSignedIn(User) && role == "User") {
+                            if(@Model.user_id == id) {
+                                <button type="button" class="btn btn-primary" style="width:30%" disabled>MY AUCTION</button>
+                            } else if(@Model.state != @Auctions.Models.Database.state.SOLD) {
+                                <button type="button" class="btn btn-warning" style="width:20%">
+                                    <a class="text-white" onclick="bid(@Model.id);">BID</a>
+                                </button>
+                            } else {
+                                <button type="button" class="btn btn-secondary" style="width:20%" disabled>SOLD</button>
+                            }
+                        } else {
+                            <button type="button" class="btn btn-danger text-white" style="width:30%" disabled>Register/Log In</button>
+                        }
+                    }  
 
                 </div>
             </div>
