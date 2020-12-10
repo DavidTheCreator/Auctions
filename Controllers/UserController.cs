@@ -333,8 +333,8 @@ namespace Auctions.Controllers {
         }
 
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> MyOrders(FilterModel filter) {
-            int limit = 5;
+        public async Task<IActionResult> MyOrders() {
+            int limit = 2;
             User user = await user_manager.GetUserAsync(base.User);
 
             var orders = await context.orders
@@ -354,18 +354,18 @@ namespace Auctions.Controllers {
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> MyOrdersPage(FilterModel filter) {
-            int limit = 5;
+        public async Task<IActionResult> MyOrdersPage(int page) {
+            int limit = 2;
             User user = await user_manager.GetUserAsync(base.User);
 
             IList<Order> orders = await context.orders
                                             .Where(order => order.user_id == user.Id)
-                                            .Skip((filter.page - 1) * limit)
+                                            .Skip((page - 1) * limit)
                                             .Take(limit)
                                             .OrderBy(order => order.date)
                                             .ToListAsync();     
 
-            TempData["current_page"] = filter.page;
+            TempData["current_page"] = page;
             TempData["num_pages"] = (int) Math
                                             .Ceiling((double) context.orders
                                             .Where(order => order.user_id == user.Id)

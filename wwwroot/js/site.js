@@ -111,8 +111,6 @@ function ordersPage(page) {
 }
 
 function updateOrders(package) {
-    console.log("evo ga");
-    console.log(package);
     $.ajax({
         type:"GET",
         url:"/User/PurchaseTokens/",
@@ -121,11 +119,8 @@ function updateOrders(package) {
         },
         success: function(response) {
             getTokens(); 
-            console.log("usao");
-            console.log(package);
             handleSuccess(response);
         }, error: function(response) {
-            console.log("nije usao");
             handleError(response);
         }
     })

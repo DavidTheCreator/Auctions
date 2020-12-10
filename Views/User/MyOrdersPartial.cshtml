@@ -1,3 +1,5 @@
+@using System.Globalization;
+
 @model IEnumerable<Auctions.Models.Database.Order>
 
 @{
@@ -24,17 +26,17 @@
         @foreach(var order in Model) {
             cnt--;
             int tokens = (int) Enum.Parse(typeof(Auctions.Models.Database.tokens), order.package);
-            int price = (int) Enum.Parse(typeof(Auctions.Models.Database.prices), order.package);
-            string price_format = price.ToString();
-            price_format = price_format.Substring(price_format.Length - 3, price_format.Length - 1);
-            price /= 1000;
+            int price_ = (int) Enum.Parse(typeof(Auctions.Models.Database.prices), order.package);
 
+            string specifier = "C";
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            string price = price_.ToString(specifier, culture);
             <tr>
                 <td>@order.id</td>
                 <td>@order.package</td>
                 <td>@order.date</td>
                 <td>@tokens</td>
-                <td>$@price,@price_format.00</td>
+                <td>@price</td>
             </tr>
         }
     </tbody>
